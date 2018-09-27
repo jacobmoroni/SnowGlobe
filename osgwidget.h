@@ -30,6 +30,8 @@ protected:
   virtual void mousePressEvent( QMouseEvent* event );
   virtual void mouseReleaseEvent( QMouseEvent* event );
   virtual void wheelEvent( QWheelEvent* event );
+  virtual bool event( QEvent* event );
+  void repaint_osg_graphics_after_interaction(QEvent* event);
 
 private:
   virtual void on_resize( int width, int height );

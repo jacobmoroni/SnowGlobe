@@ -246,3 +246,30 @@ osgGA::EventQueue* OSGWidget::getEventQueue() const
         throw std::runtime_error( "Unable to obtain valid event queue");
 }
 
+bool OSGWidget::event( QEvent* event )
+{
+    bool handled = QOpenGLWidget::event( event );
+
+    repaint_osg_graphics_after_interaction(event);
+
+    return handled;
+}
+
+void OSGWidget::repaint_osg_graphics_after_interaction(QEvent* event)
+{
+    switch( event->type() )
+    {
+    case QEvent::KeyPress:
+    case QEvent::KeyRelease:
+    case QEvent::MouseButtonDblClick:
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseMove:
+    case QEvent::Wheel:
+        this->update();
+        break;
+
+    default:
+        break;
+    }
+}
