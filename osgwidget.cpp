@@ -30,42 +30,17 @@ OSGWidget::OSGWidget( QWidget* parent, Qt::WindowFlags flags ):
     mGraphicsWindow{ new osgViewer::GraphicsWindowEmbedded{ this->x(),
                                                             this->y(),
                                                             this->width(),
-                                                            this->height() } }
-  , mViewer{ new osgViewer::CompositeViewer }
+                                                            this->height() } },
+    mViewer{ new osgViewer::CompositeViewer },
+    mRoot{new osg::Group},
+    mView{new osgViewer::View}
 {
-    mRoot = new osg::Group;
+    osg::Camera* camera{new osg::Camera}; // what the user is seeing in the world
+    this->setUpCamera(camera);
 
-    this->setUpCamera();
+    osg::ref_ptr<osgGA::TrackballManipulator> manipulator{new osgGA::TrackballManipulator};
+    this->setUpTrackballManipulator(manipulator);
 
-    osgViewer::View* mView = new osgViewer::View;
-
-    float aspectRatio = static_cast<float>( this->width() ) / static_cast<float>( this->height() ); // keep pixels square
-    auto pixelRatio   = this->devicePixelRatio();
-    osg::Camera* camera = new osg::Camera; // what the user is seeing in the world
-    camera->setViewport( 0, 0, this->width() * pixelRatio, this->height() * pixelRatio );
-
-    //setting camera
-    camera->setClearColor( osg::Vec4( 1.f, 1.f, 1.f, 1.f ) );
-    camera->setProjectionMatrixAsPerspective( 45.f, aspectRatio, 1.f, 1000.f );//so that it looks 3d (field of view, aspect, minimum distance from object, max distance)
-    camera->setGraphicsContext( mGraphicsWindow );
-    mView->setCamera( camera );
-
-    mView->setSceneData( mRoot.get() );//setting data
-    mView->addEventHandler( new osgViewer::StatsHandler );
-
-
-
-    this->setUpTrackballManipulator();
-    //creates a trackball manipulator
-    osg::ref_ptr<osgGA::TrackballManipulator> manipulator = new osgGA::TrackballManipulator;
-    manipulator->setAllowThrow( false );
-    manipulator->setHomePosition(osg::Vec3d(0.0,-20.0,3.0),osg::Vec3d(0,0,0),osg::Vec3d(0,0,1));//(where the camera is,where you are looking,what direction is up)
-    mView->setCameraManipulator( manipulator );
-
-    mViewer->addView( mView );
-    mViewer->setThreadingModel( osgViewer::CompositeViewer::SingleThreaded );
-    mViewer->realize();
-    mView->home();
     //everything above this is setting up the universe
 
 
@@ -284,13 +259,29 @@ void OSGWidget::repaintOsgGraphicsAfterInteraction(QEvent* event)
     }
 }
 
-void OSGWidget::setUpCamera()
+void OSGWidget::setUpCamera(osg::Camera* camera)
 {
+    float aspectRatio = static_cast<float>( this->width() ) / static_cast<float>( this->height() ); // keep pixels square
+    auto pixelRatio   = this->devicePixelRatio();
+    camera->setViewport( 0, 0, this->width() * pixelRatio, this->height() * pixelRatio );
+    camera->setClearColor( osg::Vec4( 1.f, 1.f, 1.f, 1.f ) );
+    camera->setProjectionMatrixAsPerspective( 45.f, aspectRatio, 1.f, 1000.f );//so that it looks 3d (field of view, aspect, minimum distance from object, max distance)
+    camera->setGraphicsContext( mGraphicsWindow );
 
+    mView->setCamera(camera);
+    mView->setSceneData( mRoot.get() );//setting data
+    mView->addEventHandler( new osgViewer::StatsHandler );
 }
 
-void OSGWidget::setUpTrackballManipulator()
+void OSGWidget::setUpTrackballManipulator(osg::ref_ptr<osgGA::TrackballManipulator> manipulator)
 {
+    manipulator->setAllowThrow( false );
+    manipulator->setHomePosition(osg::Vec3d(0.0,-20.0,3.0),osg::Vec3d(0,0,0),osg::Vec3d(0,0,1));//(where the camera is,where you are looking,what direction is up)
+    mView->setCameraManipulator( manipulator );
 
+    mViewer->addView( mView );
+    mViewer->setThreadingModel( osgViewer::CompositeViewer::SingleThreaded );
+    mViewer->realize();
+    mView->home();
 
 }

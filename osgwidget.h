@@ -32,8 +32,8 @@ protected:
   virtual void wheelEvent( QWheelEvent* event );
   virtual bool event( QEvent* event );
   void repaintOsgGraphicsAfterInteraction(QEvent* event);
-  void setUpCamera();
-  void setUpTrackballManipulator();
+  void setUpCamera(osg::Camera* camera);
+  void setUpTrackballManipulator(osg::ref_ptr<osgGA::TrackballManipulator> manipulator);
 
 private:
   virtual void on_resize( int width, int height );
