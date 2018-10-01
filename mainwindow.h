@@ -5,6 +5,7 @@
 #include <QtCore>
 
 class OutputWindow;
+//class OSGWidget; //added this
 
 namespace Ui {
 class MainWindowForm;
@@ -22,6 +23,7 @@ public slots:
     void on_actionExit_triggered();
 private:
     Ui::MainWindowForm *mMainWindowUI;
+//    OSGWidget* mOSGWidget{nullptr}; //added this
 };
 
 #endif // MAINWINDOW_H

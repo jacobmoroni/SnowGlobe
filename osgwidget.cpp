@@ -1,4 +1,4 @@
-#include "OSGWidget.h"
+#include "osgwidget.h"
 
 #include <osg/Camera>
 #include <osg/DisplaySettings>
@@ -35,37 +35,47 @@ OSGWidget::OSGWidget( QWidget* parent, Qt::WindowFlags flags ):
 {
     mRoot = new osg::Group;
 
+    this->setUpCamera();
+
     osgViewer::View* mView = new osgViewer::View;
 
-    float aspectRatio = static_cast<float>( this->width() ) / static_cast<float>( this->height() );
+    float aspectRatio = static_cast<float>( this->width() ) / static_cast<float>( this->height() ); // keep pixels square
     auto pixelRatio   = this->devicePixelRatio();
-
-    osg::Camera* camera = new osg::Camera;
+    osg::Camera* camera = new osg::Camera; // what the user is seeing in the world
     camera->setViewport( 0, 0, this->width() * pixelRatio, this->height() * pixelRatio );
 
-    camera->setClearColor( osg::Vec4( 0.f, 0.f, .5, 1.f ) );
-    camera->setProjectionMatrixAsPerspective( 45.f, aspectRatio, 1.f, 1000.f );
+    //setting camera
+    camera->setClearColor( osg::Vec4( 1.f, 1.f, 1.f, 1.f ) );
+    camera->setProjectionMatrixAsPerspective( 45.f, aspectRatio, 1.f, 1000.f );//so that it looks 3d (field of view, aspect, minimum distance from object, max distance)
     camera->setGraphicsContext( mGraphicsWindow );
-
     mView->setCamera( camera );
-    mView->setSceneData( mRoot.get() );
+
+    mView->setSceneData( mRoot.get() );//setting data
     mView->addEventHandler( new osgViewer::StatsHandler );
 
+
+
+    this->setUpTrackballManipulator();
+    //creates a trackball manipulator
     osg::ref_ptr<osgGA::TrackballManipulator> manipulator = new osgGA::TrackballManipulator;
     manipulator->setAllowThrow( false );
-    manipulator->setHomePosition(osg::Vec3d(0.0,-20.0,3.0),osg::Vec3d(0,0,0),osg::Vec3d(0,0,1));
-
+    manipulator->setHomePosition(osg::Vec3d(0.0,-20.0,3.0),osg::Vec3d(0,0,0),osg::Vec3d(0,0,1));//(where the camera is,where you are looking,what direction is up)
     mView->setCameraManipulator( manipulator );
+
     mViewer->addView( mView );
     mViewer->setThreadingModel( osgViewer::CompositeViewer::SingleThreaded );
     mViewer->realize();
     mView->home();
+    //everything above this is setting up the universe
 
+
+    //everything here down is generating the sphere. this strategy is not good for complex stuff
     osg::Sphere* sphere    = new osg::Sphere( osg::Vec3( 0.f, 0.f, 0.f ), 2.0f );
     osg::ShapeDrawable* sd = new osg::ShapeDrawable( sphere );
-    sd->setColor( osg::Vec4( 1.f, 0.f, 0.f, 1.f ) );
+    sd->setColor( osg::Vec4( 1.f, 0.f, 0.f, 0.f ) );//(rgba)
     sd->setName( "Sphere" );
 
+    //creates geometry node and this holds the sphere
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable( sd );
 
@@ -80,7 +90,7 @@ OSGWidget::OSGWidget( QWidget* parent, Qt::WindowFlags flags ):
     mRoot->addChild(geode);
 
     this->setFocusPolicy( Qt::StrongFocus );
-    this->setMinimumSize( 100, 100 );
+    this->setMinimumSize( 100, 100 );//smallest window size
     this->setMouseTracking( true );
 
     this->update();
@@ -150,24 +160,24 @@ void OSGWidget::mouseMoveEvent( QMouseEvent* event )
 
 void OSGWidget::mousePressEvent( QMouseEvent* event )
 {
-    // 1 = left mouse button
-    // 2 = middle mouse button
-    // 3 = right mouse button
+    const int leftMouseButton{1};
+    const int middleMouseButton{2};
+    const int rightMouseButton{3};
 
     unsigned int button = 0;
 
     switch( event->button() )
     {
     case Qt::LeftButton:
-        button = 1;
+        button = leftMouseButton;
         break;
 
     case Qt::MiddleButton:
-        button = 2;
+        button = middleMouseButton;
         break;
 
     case Qt::RightButton:
-        button = 3;
+        button = rightMouseButton;
         break;
 
     default:
@@ -184,24 +194,24 @@ void OSGWidget::mousePressEvent( QMouseEvent* event )
 
 void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    // 1 = left mouse button
-    // 2 = middle mouse button
-    // 3 = right mouse button
+    const int leftMouseButton{1};
+    const int middleMouseButton{2};
+    const int rightMouseButton{3};
 
     unsigned int button = 0;
 
     switch( event->button() )
     {
     case Qt::LeftButton:
-        button = 1;
+        button = leftMouseButton;
         break;
 
     case Qt::MiddleButton:
-        button = 2;
+        button = middleMouseButton;
         break;
 
     case Qt::RightButton:
-        button = 3;
+        button = rightMouseButton;
         break;
 
     default:
@@ -250,12 +260,12 @@ bool OSGWidget::event( QEvent* event )
 {
     bool handled = QOpenGLWidget::event( event );
 
-    repaint_osg_graphics_after_interaction(event);
+    repaintOsgGraphicsAfterInteraction(event);
 
     return handled;
 }
 
-void OSGWidget::repaint_osg_graphics_after_interaction(QEvent* event)
+void OSGWidget::repaintOsgGraphicsAfterInteraction(QEvent* event)
 {
     switch( event->type() )
     {
@@ -272,4 +282,15 @@ void OSGWidget::repaint_osg_graphics_after_interaction(QEvent* event)
     default:
         break;
     }
+}
+
+void OSGWidget::setUpCamera()
+{
+
+}
+
+void OSGWidget::setUpTrackballManipulator()
+{
+
+
 }

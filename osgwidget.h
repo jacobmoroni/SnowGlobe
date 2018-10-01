@@ -31,7 +31,9 @@ protected:
   virtual void mouseReleaseEvent( QMouseEvent* event );
   virtual void wheelEvent( QWheelEvent* event );
   virtual bool event( QEvent* event );
-  void repaint_osg_graphics_after_interaction(QEvent* event);
+  void repaintOsgGraphicsAfterInteraction(QEvent* event);
+  void setUpCamera();
+  void setUpTrackballManipulator();
 
 private:
   virtual void on_resize( int width, int height );
