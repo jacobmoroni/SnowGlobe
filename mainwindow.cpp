@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindowform.h"
-//#include "osgwidget.h"
-
 #include <QDockWidget>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -9,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent) :
     mMainWindowUI{new Ui::MainWindowForm}
 {
     mMainWindowUI->setupUi(this);
-//    mOSGWidget = new OSGWidget(this); //added this
 }
 
 MainWindow::~MainWindow()
