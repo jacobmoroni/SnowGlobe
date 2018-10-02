@@ -15,7 +15,7 @@
 #include <osg/LineWidth>
 #include <osgUtil/SmoothingVisitor>
 #include <osgParticle/FireEffect>
-#include <cassert>
+#include <cassert> //TODO I dont think you use this. (it only contains assert)
 #include <vector>
 #include <QKeyEvent>
 #include <QPainter>
@@ -86,6 +86,7 @@ void OSGWidget::resizeGL(int width, int height)
 
 void OSGWidget::keyPressEvent(QKeyEvent* event)
 {
+  // TODO uniform initialize?
     QString key_string   = event->text();
     const char* key_data = key_string.toLocal8Bit().data();
 
@@ -100,6 +101,7 @@ void OSGWidget::keyPressEvent(QKeyEvent* event)
 
 void OSGWidget::keyReleaseEvent( QKeyEvent* event )
 {
+  // TODO uniform initialize
     QString key_string   = event->text();
     const char* key_data = key_string.toLocal8Bit().data();
     this->getEventQueue()->keyRelease(osgGA::GUIEventAdapter::KeySymbol(*key_data));
@@ -107,6 +109,7 @@ void OSGWidget::keyReleaseEvent( QKeyEvent* event )
 
 void OSGWidget::mouseMoveEvent(QMouseEvent* event)
 {
+  // TODO uniform initialize
     auto pixel_ratio = this->devicePixelRatio();
     this->getEventQueue()->mouseMotion(static_cast<float>(event->x() * pixel_ratio),
                                         static_cast<float>(event->y() * pixel_ratio));
@@ -114,9 +117,12 @@ void OSGWidget::mouseMoveEvent(QMouseEvent* event)
 
 void OSGWidget::mousePressEvent(QMouseEvent* event)
 {
+    // TODO dont do this twice
     const int left_mouse_button{1};
     const int middle_mouse_button{2};
     const int right_mouse_button{3};
+
+    // TODO uniform init
     unsigned int button = 0;
 
     switch(event->button())
@@ -137,10 +143,12 @@ void OSGWidget::mousePressEvent(QMouseEvent* event)
         break;
     }
 
+    // TODO uniform init
     auto pixel_ratio = this->devicePixelRatio();
-    this->getEventQueue()->mouseButtonPress(static_cast<float>(event->x() * pixel_ratio),
-                                            static_cast<float>(event->y() * pixel_ratio),
-                                            button);
+    // TODO 
+    this->getEventQueue()->mouseButtonPress(
+        static_cast<float>(event->x() * pixel_ratio),
+        static_cast<float>(event->y() * pixel_ratio), button);
 }
 
 void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
@@ -148,6 +156,7 @@ void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
     const int left_mouse_button{1};
     const int middle_mouse_button{2};
     const int right_mouse_button{3};
+    // TODO uniform init
     unsigned int button = 0;
 
     switch(event->button())
@@ -168,6 +177,7 @@ void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
         break;
     }
 
+    // TODO uniform init
     auto pixel_ratio = this->devicePixelRatio();
     this->getEventQueue()->mouseButtonRelease(static_cast<float>(pixel_ratio * event->x()),
                                               static_cast<float>(pixel_ratio * event->y()),
@@ -177,7 +187,9 @@ void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
 void OSGWidget::wheelEvent(QWheelEvent* event)
 {
     event->accept();
+    // TODO uniform init
     int delta = event->delta();
+    // TODO uniform init
     osgGA::GUIEventAdapter::ScrollingMotion motion = delta > 0 ?   osgGA::GUIEventAdapter::SCROLL_UP
                                                                  : osgGA::GUIEventAdapter::SCROLL_DOWN;
     this->getEventQueue()->mouseScroll(motion);
@@ -187,12 +199,14 @@ void OSGWidget::on_resize(int width, int height)
 {
     std::vector<osg::Camera*> cameras;
     m_viewer->getCameras(cameras);
+    // TODO uniform init
     auto pixel_ratio = this->devicePixelRatio();
     cameras[0]->setViewport(0, 0, width * pixel_ratio, height * pixel_ratio);
 }
 
 osgGA::EventQueue* OSGWidget::getEventQueue() const
 {
+    // TODO uniform init
     osgGA::EventQueue* event_queue = m_graphics_window->getEventQueue();
 
     if(event_queue)
@@ -203,6 +217,7 @@ osgGA::EventQueue* OSGWidget::getEventQueue() const
 
 bool OSGWidget::event(QEvent* event)
 {
+    // TODO uniform init
     bool handled = QOpenGLWidget::event(event);
     repaintOsgGraphicsAfterInteraction(event);
     return handled;
@@ -229,6 +244,7 @@ void OSGWidget::repaintOsgGraphicsAfterInteraction(QEvent* event)
 
 void OSGWidget::setUpCamera(osg::Camera* camera, osg::Vec4 background_color, float field_of_view, float min_viewable_range, float max_viewable_range)
 {
+    // TODO uniform init
     float aspect_ratio = static_cast<float>(this->width()) / static_cast<float>( this->height());
     auto pixel_ratio   = this->devicePixelRatio();
     camera->setViewport(0, 0, this->width() * pixel_ratio, this->height() * pixel_ratio);
@@ -254,14 +270,17 @@ void OSGWidget::setUpTrackballManipulator(osg::ref_ptr<osgGA::TrackballManipulat
 
 osg::Geode* OSGWidget::generateSphere(osg::Vec3 center_of_sphere_xyz, float radius, osg::Vec4 sphere_color_rgba)
 {
+    // TODO uniform init
     osg::Sphere* sphere    = new osg::Sphere{center_of_sphere_xyz, radius};
     osg::ShapeDrawable* sd = new osg::ShapeDrawable{sphere};
     sd->setColor(sphere_color_rgba);
     sd->setName("Sphere");
 
+    // TODO uniform init
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(sd);
 
+    // TODO uniform init
     osg::StateSet* stateSet = geode->getOrCreateStateSet();
     osg::Material* material = new osg::Material;
     material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
