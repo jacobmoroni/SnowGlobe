@@ -33,13 +33,11 @@ protected:
   virtual bool event(QEvent* event);
   void repaintOsgGraphicsAfterInteraction(QEvent* event);
 
-  osg::Camera* setUpCamera(osg::Camera* camera,
-                           osg::Vec4 background_color_rgba,
+  osg::Camera* setUpCamera(osg::Vec4 background_color_rgba,
                            float field_of_view,
                            float min_viewable_range,
                            float max_viewable_range);
-  osg::ref_ptr<osgGA::TrackballManipulator> setUpTrackballManipulator(osg::ref_ptr<osgGA::TrackballManipulator> manipulator,
-                                                                      osg::Vec3d camera_location_xyz,
+  osg::ref_ptr<osgGA::TrackballManipulator> setUpTrackballManipulator(osg::Vec3d camera_location_xyz,
                                                                       osg::Vec3d camera_center_of_focus_xyz,
                                                                       osg::Vec3d world_up_vector_xyz);
   osg::Geode* generateSphere(osg::Vec3 center_of_sphere_xyz,

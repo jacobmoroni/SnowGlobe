@@ -34,12 +34,10 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     float field_of_view{45.0};
     float min_viewable_range{1.0};
     float max_viewable_range{1000.0};
-    osg::Camera* camera{new osg::Camera};
-    camera = this->setUpCamera(camera,
-                               background_color_rgba,
-                               field_of_view,
-                               min_viewable_range,
-                               max_viewable_range);
+    osg::Camera* camera{this->setUpCamera(background_color_rgba,
+                                          field_of_view,
+                                          min_viewable_range,
+                                          max_viewable_range)};
     m_view->setCamera(camera);
     m_view->setSceneData(m_root.get());
     m_view->addEventHandler(new osgViewer::StatsHandler);
@@ -47,11 +45,9 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     osg::Vec3d camera_location_xyz{0.0, -20.0, 3.0};
     osg::Vec3d camera_center_of_focus_xyz{0.0, 0.0, 0.0};
     osg::Vec3d world_up_vector_xyz{0.0, 0.0, 1.0};
-    osg::ref_ptr<osgGA::TrackballManipulator> manipulator{new osgGA::TrackballManipulator};
-    manipulator = this->setUpTrackballManipulator(manipulator,
-                                                  camera_location_xyz,
-                                                  camera_center_of_focus_xyz,
-                                                  world_up_vector_xyz);
+    osg::ref_ptr<osgGA::TrackballManipulator> manipulator{this->setUpTrackballManipulator(camera_location_xyz,
+                                                                                          camera_center_of_focus_xyz,
+                                                                                          world_up_vector_xyz)};
     m_view->setCameraManipulator(manipulator);
     m_viewer->addView(m_view);
     m_viewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
@@ -61,10 +57,9 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
     float radius{2.f};
     osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
-    osg::Geode* geode{};
-    geode = this->generateSphere(center_of_sphere_xyz,
-                                 radius,
-                                 sphere_color_rgba);
+    osg::Geode* geode{this->generateSphere(center_of_sphere_xyz,
+                                           radius,
+                                           sphere_color_rgba)};
     m_root->addChild(geode);
     this->setFocusPolicy(Qt::StrongFocus);
     unsigned int min_width{100};
@@ -125,13 +120,12 @@ void OSGWidget::mouseMoveEvent(QMouseEvent *event)
 {
     auto pixel_ratio{this->devicePixelRatio()};
     this->getEventQueue()->mouseMotion(static_cast<float>(event->x() * pixel_ratio),
-                                        static_cast<float>(event->y() * pixel_ratio));
+                                       static_cast<float>(event->y() * pixel_ratio));
 }
 
 void OSGWidget::mousePressEvent(QMouseEvent *event)
 {
-    unsigned int button{0};
-    button = this->getMouseButtonNumber(event);
+    unsigned int button{this->getMouseButtonNumber(event)};
     auto pixel_ratio{this->devicePixelRatio()};
     this->getEventQueue()->mouseButtonPress(static_cast<float>(event->x() * pixel_ratio),
                                             static_cast<float>(event->y() * pixel_ratio),
@@ -140,8 +134,7 @@ void OSGWidget::mousePressEvent(QMouseEvent *event)
 
 void OSGWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    unsigned int button{0};
-    button = this->getMouseButtonNumber(event);
+    unsigned int button{this->getMouseButtonNumber(event)};
     auto pixel_ratio{this->devicePixelRatio()};
     this->getEventQueue()->mouseButtonRelease(static_cast<float>(pixel_ratio * event->x()),
                                               static_cast<float>(pixel_ratio * event->y()),
@@ -181,7 +174,7 @@ osgGA::EventQueue* OSGWidget::getEventQueue() const
 
 bool OSGWidget::event(QEvent* event)
 {
-    bool handled = QOpenGLWidget::event(event);
+    bool handled{QOpenGLWidget::event(event)};
     repaintOsgGraphicsAfterInteraction(event);
     return handled;
 }
@@ -205,10 +198,13 @@ void OSGWidget::repaintOsgGraphicsAfterInteraction(QEvent* event)
     }
 }
 
-osg::Camera *OSGWidget::setUpCamera(osg::Camera *camera, osg::Vec4 background_color, float field_of_view, float min_viewable_range, float max_viewable_range)
+osg::Camera *OSGWidget::setUpCamera(osg::Vec4 background_color,
+                                    float field_of_view,
+                                    float min_viewable_range,
+                                    float max_viewable_range)
 {
-    float aspect_ratio{0};
-    aspect_ratio = static_cast<float>(this->width()) / static_cast<float>( this->height());
+    osg::Camera *camera{new osg::Camera};
+    float aspect_ratio{static_cast<float>(this->width()) / static_cast<float>( this->height())};
     auto pixel_ratio{this->devicePixelRatio()};
     int viewport_x{0};
     int viewport_y{0};
@@ -222,15 +218,20 @@ osg::Camera *OSGWidget::setUpCamera(osg::Camera *camera, osg::Vec4 background_co
     return camera;
 }
 
-osg::ref_ptr<osgGA::TrackballManipulator> OSGWidget::setUpTrackballManipulator(osg::ref_ptr<osgGA::TrackballManipulator> manipulator, osg::Vec3d camera_location_xyz, osg::Vec3d camera_center_of_focus_xyz, osg::Vec3d world_up_vector_xyz)
+osg::ref_ptr<osgGA::TrackballManipulator> OSGWidget::setUpTrackballManipulator(osg::Vec3d camera_location_xyz,
+                                                                               osg::Vec3d camera_center_of_focus_xyz,
+                                                                               osg::Vec3d world_up_vector_xyz)
 {
+    osg::ref_ptr<osgGA::TrackballManipulator> manipulator{new osgGA::TrackballManipulator};
     manipulator->setAllowThrow(false);
     manipulator->setHomePosition(camera_location_xyz, camera_center_of_focus_xyz, world_up_vector_xyz);
 
     return manipulator;
 }
 
-osg::Geode *OSGWidget::generateSphere(osg::Vec3 center_of_sphere_xyz, float radius, osg::Vec4 sphere_color_rgba)
+osg::Geode *OSGWidget::generateSphere(osg::Vec3 center_of_sphere_xyz,
+                                      float radius,
+                                      osg::Vec4 sphere_color_rgba)
 {
     osg::Sphere* sphere{new osg::Sphere{center_of_sphere_xyz, radius}};
     osg::ShapeDrawable* sd{new osg::ShapeDrawable{sphere}};
@@ -240,21 +241,21 @@ osg::Geode *OSGWidget::generateSphere(osg::Vec3 center_of_sphere_xyz, float radi
     osg::Geode* geode{new osg::Geode};
     geode->addDrawable(sd);
 
-    osg::StateSet* stateSet{geode->getOrCreateStateSet()};
+    osg::StateSet* state_set{geode->getOrCreateStateSet()};
     osg::Material* material{new osg::Material};
     material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
-    stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
-    stateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+    state_set->setAttributeAndModes(material, osg::StateAttribute::ON);
+    state_set->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 
     return geode;
 }
 
 unsigned int OSGWidget::getMouseButtonNumber(QMouseEvent* event)
 {
-    const int left_mouse_button{1};
-    const int middle_mouse_button{2};
-    const int right_mouse_button{3};
-    unsigned int button = 0;
+    unsigned int left_mouse_button{1};
+    unsigned int middle_mouse_button{2};
+    unsigned int right_mouse_button{3};
+    unsigned int button{0};
 
     switch(event->button())
     {
