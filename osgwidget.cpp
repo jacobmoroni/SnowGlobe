@@ -6,6 +6,9 @@
 #include <osg/Shape>
 #include <osg/ShapeDrawable>
 #include <osg/StateSet>
+#include <osg/PositionAttitudeTransform>
+#include <osg/Geometry>
+#include <osg/Material>
 #include <osgDB/WriteFile>
 #include <osgGA/EventQueue>
 #include <osgViewer/View>
@@ -48,6 +51,7 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     osg::ref_ptr<osgGA::TrackballManipulator> manipulator{this->setUpTrackballManipulator(camera_location_xyz,
                                                                                           camera_center_of_focus_xyz,
                                                                                           world_up_vector_xyz)};
+
     m_view->setCameraManipulator(manipulator);
     m_viewer->addView(m_view);
     m_viewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
@@ -55,12 +59,18 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     m_view->home();
 
     osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
-    float radius{2.f};
+    float radius{1.f};
     osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
     osg::Geode* geode{this->generateSphere(center_of_sphere_xyz,
                                            radius,
                                            sphere_color_rgba)};
     m_root->addChild(geode);
+
+    osg::Vec4 box_color_rgba(0.f,0.f,0.f,1.f);
+    osg::Vec3d scale_factor(1.f,1.f,1.f);
+    osg::Node* box_transform{this->createWireframeCube(box_color_rgba, scale_factor)};
+    m_root->addChild(box_transform);
+
     this->setFocusPolicy(Qt::StrongFocus);
     unsigned int min_width{100};
     unsigned int min_height{100};
@@ -276,4 +286,46 @@ unsigned int OSGWidget::getMouseButtonNumber(QMouseEvent* event)
     }
 
     return button;
+}
+
+
+osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color, osg::Vec3d &scaleFactor)
+{
+    osg::Vec3Array* v = new osg::Vec3Array;
+    v->resize( 8 );
+    (*v)[0].set( 5.f, 5.f, -5.f );
+    (*v)[1].set(-5.f, 5.f, -5.f );
+    (*v)[2].set(-5.f, -5.f, -5.f );
+    (*v)[3].set(5.f, -5.f, -5.f );
+    (*v)[4].set(5.f, 5.f, 5.f );
+    (*v)[5].set(-5.f, 5.f, 5.f );
+    (*v)[6].set(-5.f, -5.f, 5.f );
+    (*v)[7].set(5.f, -5.f, 5.f );
+
+    osg::Geometry* geom = new osg::Geometry;
+    geom->setUseDisplayList( false );
+    geom->setVertexArray( v );
+
+    osg::Vec4Array* c = new osg::Vec4Array;
+    c->push_back( color );
+    geom->setColorArray( c, osg::Array::BIND_OVERALL );
+
+    GLushort idxLines[8] = {0, 4, 1, 5, 2, 6, 3, 7};
+    GLushort idxLoop1[4] = {0, 1, 2, 3};
+    GLushort idxLoop2[4] = {4, 5, 6, 7};
+
+    geom->addPrimitiveSet( new osg::DrawElementsUShort( osg::PrimitiveSet::LINES, 8, idxLines ) );
+    geom->addPrimitiveSet( new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoop1 ) );
+    geom->addPrimitiveSet( new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoop2 ) );
+
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable( geom );
+
+    geode->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED );
+    geode->getOrCreateStateSet()->setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
+    osg::PositionAttitudeTransform* transform = new osg::PositionAttitudeTransform;
+    transform->setScale(scaleFactor);
+
+    transform->addChild(geode);
+    return transform;
 }

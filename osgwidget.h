@@ -2,7 +2,9 @@
 #define MEEN_570_OSGWIDGET
 
 #include <QOpenGLWidget>
+#include <QVector4D>
 #include <osg/ref_ptr>
+#include <osg/Node>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/CompositeViewer>
 #include <osgGA/TrackballManipulator>
@@ -44,6 +46,7 @@ protected:
                              float radius,
                              osg::Vec4 sphere_color_rgba);
   unsigned int getMouseButtonNumber(QMouseEvent* event);
+  osg::Node* createWireframeCube(osg::Vec4 &color, osg::Vec3d &scaleFactor);
 
 private:
   virtual void on_resize( int width, int height );
