@@ -2,13 +2,13 @@
 #define MEEN_570_OSGWIDGET
 
 #include <QOpenGLWidget>
-#include <QVector4D>
+//#include <QVector4D>
 #include <osg/ref_ptr>
 #include <osg/Node>
-#include <osgViewer/GraphicsWindow>
+//#include <osgViewer/GraphicsWindow>
 #include <osgViewer/CompositeViewer>
 #include <osgGA/TrackballManipulator>
-#include <osgText/Text>
+//#include <osgText/Text>
 
 class OSGWidget : public QOpenGLWidget
 {
@@ -21,6 +21,7 @@ public:
   virtual ~OSGWidget();
 
 protected:
+  void timerEvent(QTimerEvent *event);
   virtual void paintEvent(QPaintEvent* paintEvent);
   virtual void paintGL();
   virtual void resizeGL(int width, int height);
@@ -55,6 +56,7 @@ private:
   osg::ref_ptr<osgViewer::CompositeViewer> m_viewer;
   osg::ref_ptr<osgViewer::View> m_view;
   osg::ref_ptr<osg::Group> m_root;
+  int m_timer_id{0};
 };
 
 #endif

@@ -1,34 +1,69 @@
 #include "osgwidget.h"
+
 #include <osg/Camera>
-#include <osg/DisplaySettings>
+//#include <osg/DisplaySettings>
 #include <osg/Geode>
 #include <osg/Material>
-#include <osg/Shape>
+//#include <osg/Shape>
 #include <osg/ShapeDrawable>
 #include <osg/StateSet>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
 #include <osg/Material>
-#include <osgDB/WriteFile>
+#include <osg/NodeVisitor>
+//#include <osg/LineWidth>
+
+//#include <osgDB/WriteFile>
 #include <osgGA/EventQueue>
 #include <osgViewer/View>
 #include <osgViewer/ViewerEventHandlers>
-#include <osg/MatrixTransform>
-#include <osg/NodeVisitor>
-#include <osg/LineWidth>
-#include <osgUtil/SmoothingVisitor>
-#include <osgParticle/FireEffect>
+//#include <osg/MatrixTransform>
+//#include <osgUtil/SmoothingVisitor>
+//#include <osgPartricle/FireEffect>
+
+//#include <cassert>
 #include <vector>
+
 #include <QKeyEvent>
 #include <QPainter>
 #include <QWheelEvent>
 
+class SphereUpdateCallback: public osg::NodeCallback
+{
+public:
+    SphereUpdateCallback(){}
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        if(m_up)
+            m_count++;
+        else
+            m_count--;
+
+        osg::Vec3d position{m_scale_step*m_count-1.0, m_scale_step*m_count+1.0, 0.0};
+//        osg::Vec3d scale_factor{m_scale_step*m_count+1.0, 1.0, 1.0};
+        osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
+//        pat->setScale(scale_factor);
+        pat->setPosition(position);
+
+        traverse(node, nv);
+
+        if(m_count==30 || m_count==0)
+            m_up=!m_up;
+    }
+
+protected:
+    bool m_up{true};
+    unsigned int m_count{0};
+    double m_scale_step{1.0/30.0};
+};
+
 OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     QOpenGLWidget{parent,flags},
     m_graphics_window{new osgViewer::GraphicsWindowEmbedded{this->x(),
-                                                          this->y(),
-                                                          this->width(),
-                                                          this->height()}},
+                                                            this->y(),
+                                                            this->width(),
+                                                            this->height()}},
     m_viewer{new osgViewer::CompositeViewer},
     m_root{new osg::Group},
     m_view{new osgViewer::View}
@@ -61,10 +96,15 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
     float radius{1.f};
     osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
-    osg::Geode* geode{this->generateSphere(center_of_sphere_xyz,
+    osg::Geode* sphere{this->generateSphere(center_of_sphere_xyz,
                                            radius,
                                            sphere_color_rgba)};
-    m_root->addChild(geode);
+
+    osg::PositionAttitudeTransform *transform{new osg::PositionAttitudeTransform};
+    transform->setPosition(osg::Vec3(0.f,0.f,0.f));
+    transform->setUpdateCallback(new SphereUpdateCallback());
+    transform->addChild(sphere);
+    m_root->addChild(transform);
 
     osg::Vec4 box_color_rgba(0.f,0.f,0.f,1.f);
     osg::Vec3d scale_factor(1.f,1.f,1.f);
@@ -77,10 +117,22 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     this->setMinimumSize(min_width, min_height);
     this->setMouseTracking(true);
     this->update();
+
+    double frames_per_second{30};
+    double time_step{1.0/frames_per_second};
+    double timer_duration_in_milliseconds{time_step *1000};
+    m_timer_id=startTimer(timer_duration_in_milliseconds);
 }
 
 OSGWidget::~OSGWidget()
 {
+    killTimer(m_timer_id);
+    delete m_viewer;
+}
+
+void OSGWidget::timerEvent(QTimerEvent *event)
+{
+    update();
 }
 
 void OSGWidget::paintEvent(QPaintEvent*)

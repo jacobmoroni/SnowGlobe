@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.4)
-project(QtOSGExample)
+project(SnowGlobe)
+
+IF (NOT TARGET gtest)
+    # Prevent GoogleTest from overriding our compiler/linker options
+    # when building with Visual Studio
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    add_subdirectory(libs/googletest)
+ENDIF()
 
 FIND_PACKAGE(Qt5Widgets)
 FIND_PACKAGE(Qt5Gui)
@@ -14,6 +21,8 @@ SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTOUIC ON)
 SET(CMAKE_AUTORCC ON)
 
+#add_library(${PROJECT_NAME) STATIC)
+
 SET(MYSOURCE
     main.cpp
     mainwindow.cpp
@@ -21,7 +30,12 @@ SET(MYSOURCE
     mainwindowform.ui
     osgwidget.h
     osgwidget.cpp
+    physics.h
+    physics.cpp
+    physics_unittests.cpp
     )
+
+set(TEST_NAME ${PROJECT_NAME}_UnitTest)
 
 add_executable(${PROJECT_NAME}
     ${MYSOURCE}
@@ -29,6 +43,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     ${OPENSCENEGRAPH_LIBRARIES}	
+    ${TEST_NAME} gtest gtest_main
     Qt5::Widgets
     Qt5::Gui
 )
