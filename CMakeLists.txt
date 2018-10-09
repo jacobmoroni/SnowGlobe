@@ -10,7 +10,7 @@ ENDIF()
 
 FIND_PACKAGE(Qt5Widgets)
 FIND_PACKAGE(Qt5Gui)
-FIND_PACKAGE( OpenSceneGraph REQUIRED COMPONENTS osgDB osgGA osgUtil osgViewer osgText)
+FIND_PACKAGE(OpenSceneGraph REQUIRED COMPONENTS osgDB osgGA osgUtil osgViewer osgText)
 
 INCLUDE_DIRECTORIES( ${OPENSCENEGRAPH_INCLUDE_DIRS} )
 
@@ -32,13 +32,14 @@ SET(MYSOURCE
     osgwidget.cpp
     physics.h
     physics.cpp
-    physics_unittests.cpp
     )
 
 set(TEST_NAME ${PROJECT_NAME}_UnitTest)
 
 add_executable(${PROJECT_NAME}
-    ${MYSOURCE}
+    ${MYSOURCE})
+add_executable(${TEST_NAME}
+    physics_unittests.cpp
     )
 
 target_link_libraries(${PROJECT_NAME}

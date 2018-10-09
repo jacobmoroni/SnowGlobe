@@ -127,7 +127,8 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
 OSGWidget::~OSGWidget()
 {
     killTimer(m_timer_id);
-    delete m_viewer;
+//    delete m_viewer;
+//    delete m_graphics_window;
 }
 
 void OSGWidget::timerEvent(QTimerEvent *event)
