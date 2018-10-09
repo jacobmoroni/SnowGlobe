@@ -32,19 +32,23 @@ SET(MYSOURCE
     osgwidget.cpp
     physics.h
     physics.cpp
+    vector.cpp
+    vector.h
     )
 
 set(TEST_NAME ${PROJECT_NAME}_UnitTest)
 
 add_executable(${PROJECT_NAME}
     ${MYSOURCE})
+
+target_link_libraries(${PROJECT_NAME}
+    ${OPENSCENEGRAPH_LIBRARIES}
+    Qt5::Widgets
+    Qt5::Gui
+)
+
 add_executable(${TEST_NAME}
     physics_unittests.cpp
     )
 
-target_link_libraries(${PROJECT_NAME}
-    ${OPENSCENEGRAPH_LIBRARIES}	
-    ${TEST_NAME} gtest gtest_main
-    Qt5::Widgets
-    Qt5::Gui
-)
+target_link_libraries(${TEST_NAME} gtest gtest_main)
