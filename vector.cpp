@@ -61,4 +61,9 @@ namespace phys {
         else
             return false;
     }
+
+    Vector Vector::operator =(Vector rhs)
+    {
+        return{this->m_x=rhs.m_x,this->m_y=rhs.m_y,this->m_z=rhs.m_z};
+    }
 }

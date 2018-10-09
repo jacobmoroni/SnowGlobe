@@ -42,7 +42,7 @@ TEST(Given2Vectors,whenSubtracting2Vectors_OutputIsCorrect)
 TEST(GivenVectorAndNumber, whenMultiplyingByNumber_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
-    double number{0.1};
+    float number{0.1};
 
     phys::Vector goldenVector{0.1,0.2,0.3};
     EXPECT_EQ(goldenVector,vec1*number);
@@ -51,7 +51,7 @@ TEST(GivenVectorAndNumber, whenMultiplyingByNumber_OutputIsCorrect)
 TEST(GivenVectorAndNumber, whenAddingNumber_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
-    double number{3.2};
+    float number{3.2};
 
     phys::Vector goldenVector{4.2,5.2,6.2};
     EXPECT_EQ(goldenVector,vec1+number);
@@ -60,7 +60,7 @@ TEST(GivenVectorAndNumber, whenAddingNumber_OutputIsCorrect)
 TEST(GivenVectorAndNumber, whenSubtractingNumber_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
-    double number{0.1};
+    float number{0.1};
 
     phys::Vector goldenVector{0.9,1.9,2.9};
     EXPECT_EQ(goldenVector,vec1-number);
@@ -72,22 +72,43 @@ TEST(GivenVectorAndNumber, whenSubtractingNumber_OutputIsCorrect)
 //{
 
 //};
-double updatePosition(current_position, velocity)
-{
 
+
+void updateVelocity(phys::Vector &velocity, phys::Vector &accel, float dt)
+{
+    velocity = velocity+(accel*dt);
 }
-double advanceAcceleration(double acc,double mass,double drag)
+
+void updatePosition(phys::Vector &position, phys::Vector &velocity, phys::Vector &accel, float dt)
+{
+    updateVelocity(velocity, accel, dt);
+    position = position + (velocity*dt);
+}
+
+float advanceAcceleration(float acc,float mass,float drag)
 {
 
-    double acc_new = acc+(drag/mass);
+    float acc_new = acc+(drag/mass);
     return acc_new;
 }
 
+TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
+{
+    phys::Vector velocity{7.0,0,0};
+    phys::Vector accel{0,0,-9.8};
+    phys::Vector position{0,0,0};
+    float dt = 0.1;
+    phys::Vector golden_velocity_1_time_step{7.0,0.0,-0.98};
+    phys::Vector golden_position_1_time_step{0.7,0.0,-0.098};
+    updatePosition(position,velocity,accel,dt);
+    EXPECT_EQ(velocity,golden_velocity_1_time_step);
+//    EXPECT_NEAR(position,golden_position_1_time_step,0.001);
+}
 TEST(given,d)
 {
-    double acc{1.5};
-    double mass{5.0};
-    double drag{.05};
-    double acc_new = advanceAcceleration(acc,mass,drag);
+    float acc{1.5};
+    float mass{5.0};
+    float drag{.05};
+    float acc_new = advanceAcceleration(acc,mass,drag);
     EXPECT_EQ(0,0);
 }
