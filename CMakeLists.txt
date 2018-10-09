@@ -21,7 +21,12 @@ SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTOUIC ON)
 SET(CMAKE_AUTORCC ON)
 
-#add_library(${PROJECT_NAME) STATIC)
+add_library(PhysicsLib STATIC
+    physics.h
+    physics.cpp
+    vector.cpp
+    vector.h
+    )
 
 SET(MYSOURCE
     main.cpp
@@ -30,10 +35,6 @@ SET(MYSOURCE
     mainwindowform.ui
     osgwidget.h
     osgwidget.cpp
-    physics.h
-    physics.cpp
-    vector.cpp
-    vector.h
     )
 
 set(TEST_NAME ${PROJECT_NAME}_UnitTest)
@@ -43,6 +44,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     ${OPENSCENEGRAPH_LIBRARIES}
+    PhysicsLib
     Qt5::Widgets
     Qt5::Gui
 )
@@ -51,4 +53,7 @@ add_executable(${TEST_NAME}
     physics_unittests.cpp
     )
 
-target_link_libraries(${TEST_NAME} gtest gtest_main)
+target_link_libraries(${TEST_NAME}
+    PhysicsLib
+    gtest
+    gtest_main)

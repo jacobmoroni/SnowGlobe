@@ -4,22 +4,22 @@ namespace phys {
 
     Vector::Vector(){}
 
-    Vector::Vector(double x,double y, double z):
+    Vector::Vector(float x,float y, float z):
         m_x{x}, m_y{y}, m_z{z}
     {
     }
 
-    double Vector::getX() const
+    float Vector::getX() const
     {
         return this->m_x;
     }
 
-    double Vector::getY() const
+    float Vector::getY() const
     {
         return this->m_y;
     }
 
-    double Vector::getZ() const
+    float Vector::getZ() const
     {
         return this->m_z;
     }
@@ -29,7 +29,32 @@ namespace phys {
         return Vector{this->m_x + rhs.m_x, this->m_y + rhs.m_y, this->m_z + rhs.m_z};
     }
 
-    bool Vector::operator ==(Vector rhs)
+    Vector Vector::operator -(Vector rhs)
+    {
+        return Vector{this->m_x - rhs.m_x, this->m_y - rhs.m_y, this->m_z - rhs.m_z};
+    }
+
+    Vector Vector::operator *(float number)
+    {
+        return Vector{this->m_x*number, this->m_y*number, this->m_z*number};
+    }
+
+    Vector Vector::operator +(float number)
+    {
+        return Vector{this->m_x+number, this->m_y+number, this->m_z+number};
+    }
+
+    Vector Vector::operator -(float number)
+    {
+        return Vector{this->m_x-number, this->m_y-number, this->m_z-number};
+    }
+
+    Vector Vector::operator -()
+    {
+        return Vector{-this->m_x,-this->m_y, -this->m_z};
+    }
+
+    bool Vector::operator ==(const Vector rhs) const
     {
         if (this->m_x == rhs.m_x && this->m_y == rhs.m_y && this->m_z==rhs.m_z)
             return true;

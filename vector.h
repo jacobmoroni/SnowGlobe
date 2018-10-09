@@ -6,20 +6,24 @@ namespace phys {
     {
     public:
         Vector();
-        Vector(double x, double y, double z);
+        Vector(float x, float y, float z);
+        float getX() const;
+        float getY() const;
+        float getZ() const;
         Vector operator+ (Vector rhs);
         Vector operator- (Vector rhs);
         Vector operator* (float number);
+        Vector operator+ (float number);
+        Vector operator- (float number);
+
         Vector operator- ();
-        bool operator== (Vector rhs);
-        double getX() const;
-        double getY() const;
-        double getZ() const;
+        bool operator== (const Vector rhs) const;
+
 
     private:
-        double m_x{0};
-        double m_y{0};
-        double m_z{0};
+        float m_x{0};
+        float m_y{0};
+        float m_z{0};
     };
 }
 #endif // VECTOR_H
