@@ -3,11 +3,13 @@
 
 bool expectNear(phys::Vector vec1, phys::Vector vec2, float threshold)
 {
-    float abs_x{abs(vec1.getX()-vec2.getX())};
-    float abs_y{abs(vec1.getY()-vec2.getY())};
-    float abs_z{abs(vec1.getZ()-vec2.getZ())};
-    std::cout<<abs_x<<abs_y<<abs_z<<std::endl;
-    if (abs_x<=threshold && abs_y<=threshold && abs_z<=threshold)
+    vec1 = vec1.abs();
+    vec2 = vec2.abs();
+    float abs_x{(vec1.getX()-vec2.getX())};
+    float abs_y{(vec1.getY()-vec2.getY())};
+    float abs_z{(vec1.getZ()-vec2.getZ())};
+//    std::cout<<abs_x<<" "<<abs_y<<" "<<abs_z<<std::endl;
+    if (abs_x<=threshold && abs_x>=-threshold && abs_y<=threshold && abs_y >= -threshold && abs_z<=threshold && abs_z>=-threshold)
         return true;
     else
         return false;
@@ -97,11 +99,9 @@ void updatePosition(phys::Vector &position, phys::Vector &velocity, phys::Vector
     position = position + (velocity*dt);
 }
 
-float advanceAcceleration(float acc,float mass,float drag)
+void updateAcceleration(phys::Vector &acc, float mass, phys::Vector drag_force, float dt)
 {
-
-    float acc_new = acc+(drag/mass);
-    return acc_new;
+    acc = acc+(drag_force/mass);
 }
 
 TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
@@ -114,15 +114,15 @@ TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
     phys::Vector golden_position_1_time_step{0.7,0.0,-0.098};
     updatePosition(position,velocity,accel,dt);
     EXPECT_EQ(velocity,golden_velocity_1_time_step);
-    EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.001));
-//    EXPECT_NEAR(position,golden_position_1_time_step,0.001);
+    EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.0001));
 }
+
 TEST(given,d)
 {
     float acc{1.5};
     float mass{5.0};
     float drag{.05};
-    float acc_new = advanceAcceleration(acc,mass,drag);
+//    float acc_new = advanceAcceleration(acc,mass,drag);
     EXPECT_EQ(0,0);
 
 }

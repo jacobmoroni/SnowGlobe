@@ -34,6 +34,11 @@ namespace phys {
         return Vector{this->m_x - rhs.m_x, this->m_y - rhs.m_y, this->m_z - rhs.m_z};
     }
 
+    Vector Vector::operator /(float number)
+    {
+        return Vector{this->m_x/number,this->m_y/number,this->m_z*number};
+    }
+
     Vector Vector::operator *(float number)
     {
         return Vector{this->m_x*number, this->m_y*number, this->m_z*number};
@@ -62,22 +67,26 @@ namespace phys {
             return false;
     }
 
-    Vector Vector::abs(Vector vec)
+    Vector Vector::abs()
     {
-        if (vec.getX() < 0.0)
-            x{-vec.getX()};
-        else
-            x{vec.getX()};
+        float x{0};
+        float y{0};
+        float z{0};
 
-        if (vec.getY() < 0.0)
-            y{-vec.getY()};
+        if (this->getX() < 0.0)
+            x=-this->getX();
         else
-            y{vec.getY()};
+            x=this->getX();
 
-        if (vec.getZ() < 0.0)
-            z{-vec.getZ()};
+        if (this->getY() < 0.0)
+            y=-this->getY();
         else
-            z{vec.getZ()};
+            y=this->getY();
+
+        if (this->getZ() < 0.0)
+            z=-this->getZ();
+        else
+            z=this->getZ();
         return Vector{x,y,z};
     }
 }

@@ -76,9 +76,6 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
                                           field_of_view,
                                           min_viewable_range,
                                           max_viewable_range)};
-    m_view->setCamera(camera);
-    m_view->setSceneData(m_root.get());
-    m_view->addEventHandler(new osgViewer::StatsHandler);
 
     osg::Vec3d camera_location_xyz{0.0, -20.0, 3.0};
     osg::Vec3d camera_center_of_focus_xyz{0.0, 0.0, 0.0};
@@ -86,31 +83,8 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     osg::ref_ptr<osgGA::TrackballManipulator> manipulator{this->setUpTrackballManipulator(camera_location_xyz,
                                                                                           camera_center_of_focus_xyz,
                                                                                           world_up_vector_xyz)};
-
-    m_view->setCameraManipulator(manipulator);
-    m_viewer->addView(m_view);
-    m_viewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
-    m_viewer->realize();
-    m_view->home();
-
-    osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
-    float radius{1.f};
-    osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
-    osg::Geode* sphere{this->generateSphere(center_of_sphere_xyz,
-                                           radius,
-                                           sphere_color_rgba)};
-
-    osg::PositionAttitudeTransform *transform{new osg::PositionAttitudeTransform};
-    transform->setPosition(osg::Vec3(0.f,0.f,0.f));
-    transform->setUpdateCallback(new SphereUpdateCallback());
-    transform->addChild(sphere);
-    m_root->addChild(transform);
-
-    osg::Vec4 box_color_rgba(0.f,0.f,0.f,1.f);
-    osg::Vec3d scale_factor(1.f,1.f,1.f);
-    osg::Node* box_transform{this->createWireframeCube(box_color_rgba, scale_factor)};
-    m_root->addChild(box_transform);
-
+    this->setUpMView(camera, manipulator);
+    this->setUpMViewer();
     this->setFocusPolicy(Qt::StrongFocus);
     unsigned int min_width{100};
     unsigned int min_height{100};
@@ -122,13 +96,22 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     double time_step{1.0/frames_per_second};
     double timer_duration_in_milliseconds{time_step *1000};
     m_timer_id=startTimer(timer_duration_in_milliseconds);
+
+    osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
+    float radius{1.f};
+    osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
+    osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz, radius, sphere_color_rgba)};
+    m_root->addChild(sphere);
+
+    osg::Vec4 box_color_rgba(0.f,0.f,0.f,1.f);
+    osg::Vec3d scale_factor(1.f,1.f,1.f);
+    osg::Node* box_transform{this->createWireframeCube(box_color_rgba, scale_factor)};
+    m_root->addChild(box_transform);
 }
 
 OSGWidget::~OSGWidget()
 {
     killTimer(m_timer_id);
-//    delete m_viewer;
-//    delete m_graphics_window;
 }
 
 void OSGWidget::timerEvent(QTimerEvent *event)
@@ -292,7 +275,22 @@ osg::ref_ptr<osgGA::TrackballManipulator> OSGWidget::setUpTrackballManipulator(o
     return manipulator;
 }
 
-osg::Geode *OSGWidget::generateSphere(osg::Vec3 center_of_sphere_xyz,
+osg::Node *OSGWidget::setUpSphere(osg::Vec3 center_of_sphere_xyz,
+                                  float radius,
+                                  osg::Vec4 sphere_color_rgba)
+{
+    osg::Geode* sphere_geode{this->generateSphereGeode(center_of_sphere_xyz,
+                                           radius,
+                                           sphere_color_rgba)};
+
+    osg::PositionAttitudeTransform *transform{new osg::PositionAttitudeTransform};
+    transform->setPosition(center_of_sphere_xyz);
+    transform->setUpdateCallback(new SphereUpdateCallback());
+    transform->addChild(sphere_geode);
+    return transform;
+}
+
+osg::Geode *OSGWidget::generateSphereGeode(osg::Vec3 center_of_sphere_xyz,
                                       float radius,
                                       osg::Vec4 sphere_color_rgba)
 {
@@ -381,4 +379,20 @@ osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color, osg::Vec3d &scaleFac
 
     transform->addChild(geode);
     return transform;
+}
+
+void OSGWidget::setUpMView(osg::Camera* camera, osg::ref_ptr<osgGA::TrackballManipulator> manipulator)
+{
+    m_view->setCamera(camera);
+    m_view->setCameraManipulator(manipulator);
+    m_view->setSceneData(m_root.get());
+    m_view->addEventHandler(new osgViewer::StatsHandler);
+    m_view->home();
+}
+
+void OSGWidget::setUpMViewer()
+{
+    m_viewer->addView(m_view);
+    m_viewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
+    m_viewer->realize();
 }

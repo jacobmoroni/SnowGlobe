@@ -43,11 +43,17 @@ protected:
   osg::ref_ptr<osgGA::TrackballManipulator> setUpTrackballManipulator(osg::Vec3d camera_location_xyz,
                                                                       osg::Vec3d camera_center_of_focus_xyz,
                                                                       osg::Vec3d world_up_vector_xyz);
-  osg::Geode* generateSphere(osg::Vec3 center_of_sphere_xyz,
+  osg::Node* setUpSphere(osg::Vec3 center_of_sphere_xyz,
+                         float radius,
+                         osg::Vec4 sphere_color_rgba);
+
+  osg::Geode* generateSphereGeode(osg::Vec3 center_of_sphere_xyz,
                              float radius,
                              osg::Vec4 sphere_color_rgba);
   unsigned int getMouseButtonNumber(QMouseEvent* event);
   osg::Node* createWireframeCube(osg::Vec4 &color, osg::Vec3d &scaleFactor);
+  void setUpMView(osg::Camera* camera, osg::ref_ptr<osgGA::TrackballManipulator> manipulator);
+  void setUpMViewer();
 
 private:
   virtual void on_resize( int width, int height );
