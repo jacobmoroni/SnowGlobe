@@ -62,8 +62,22 @@ namespace phys {
             return false;
     }
 
-    Vector Vector::operator =(Vector rhs)
+    Vector Vector::abs(Vector vec)
     {
-        return{this->m_x=rhs.m_x,this->m_y=rhs.m_y,this->m_z=rhs.m_z};
+        if (vec.getX() < 0.0)
+            x{-vec.getX()};
+        else
+            x{vec.getX()};
+
+        if (vec.getY() < 0.0)
+            y{-vec.getY()};
+        else
+            y{vec.getY()};
+
+        if (vec.getZ() < 0.0)
+            z{-vec.getZ()};
+        else
+            z{vec.getZ()};
+        return Vector{x,y,z};
     }
 }

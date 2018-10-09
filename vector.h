@@ -18,8 +18,8 @@ namespace phys {
 
         Vector operator- ();
         bool operator== (const Vector rhs) const;
-        Vector operator= (Vector rhs);
-
+//        Vector operator= (Vector rhs);
+        Vector abs(Vector vec);
 
     private:
         float m_x{0};

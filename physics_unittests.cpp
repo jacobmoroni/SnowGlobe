@@ -1,6 +1,18 @@
 #include <gtest/gtest.h>
 #include "vector.h"
 
+bool expectNear(phys::Vector vec1, phys::Vector vec2, float threshold)
+{
+    float abs_x{abs(vec1.getX()-vec2.getX())};
+    float abs_y{abs(vec1.getY()-vec2.getY())};
+    float abs_z{abs(vec1.getZ()-vec2.getZ())};
+    std::cout<<abs_x<<abs_y<<abs_z<<std::endl;
+    if (abs_x<=threshold && abs_y<=threshold && abs_z<=threshold)
+        return true;
+    else
+        return false;
+}
+
 TEST(GivenSingleVector,whenInializingVectors_MembersAreCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
@@ -102,6 +114,7 @@ TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
     phys::Vector golden_position_1_time_step{0.7,0.0,-0.098};
     updatePosition(position,velocity,accel,dt);
     EXPECT_EQ(velocity,golden_velocity_1_time_step);
+    EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.001));
 //    EXPECT_NEAR(position,golden_position_1_time_step,0.001);
 }
 TEST(given,d)
@@ -111,4 +124,5 @@ TEST(given,d)
     float drag{.05};
     float acc_new = advanceAcceleration(acc,mass,drag);
     EXPECT_EQ(0,0);
+
 }
