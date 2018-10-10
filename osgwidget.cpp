@@ -44,7 +44,7 @@ void OSGWidget::setupWorld()
     float sphere_radius{1.f};
     osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
     phys::Vector position{0,0,0};
-    phys::Vector velocity{7,7,7};
+    phys::Vector velocity{7,0,0};
     phys::Vector accel{0,0,-9.8};
     m_sphere = new Sphere(position,
                           velocity,
@@ -73,8 +73,8 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     m_view{new osgViewer::View}
 {
     this->setFocusPolicy(Qt::StrongFocus);
-    unsigned int min_width{100};
-    unsigned int min_height{100};
+    unsigned int min_width{800};
+    unsigned int min_height{300};
     this->setMinimumSize(min_width, min_height);
     this->setMouseTracking(true);
     this->setupMViewer();
@@ -228,7 +228,7 @@ osg::Camera *OSGWidget::setUpCamera(osg::Vec4 background_color,
                                     float max_viewable_range)
 {
     osg::Camera *camera{new osg::Camera};
-    float aspect_ratio{static_cast<float>(this->width()) / static_cast<float>( this->height())};
+    float aspect_ratio{static_cast<float>(this->width()) / static_cast<float>(this->height())};
     auto pixel_ratio{this->devicePixelRatio()};
     int viewport_x{0};
     int viewport_y{0};

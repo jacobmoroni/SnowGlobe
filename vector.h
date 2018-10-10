@@ -18,7 +18,6 @@ namespace phys {
         Vector operator- (float number);
         Vector operator- ();
         bool operator== (const Vector rhs) const;
-//        Vector operator= (Vector rhs);
         Vector abs();
         void setVector(float x, float y, float z);
 
