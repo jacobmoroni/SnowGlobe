@@ -73,9 +73,6 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     m_view{new osgViewer::View}
 {
     this->setFocusPolicy(Qt::StrongFocus);
-    unsigned int min_width{100};
-    unsigned int min_height{100};
-    this->setMinimumSize(min_width, min_height);
     this->setMouseTracking(true);
     this->setupMViewer();
     this->setupWorld();
