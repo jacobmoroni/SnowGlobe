@@ -26,6 +26,8 @@ add_library(PhysicsLib STATIC
     physics.cpp
     vector.cpp
     vector.h
+    sphere.cpp
+    sphere.h
     )
 
 SET(MYSOURCE
@@ -35,6 +37,8 @@ SET(MYSOURCE
     mainwindowform.ui
     osgwidget.h
     osgwidget.cpp
+    sphereupdatecallback.cpp
+    sphereupdatecallback.h
     )
 
 set(TEST_NAME ${PROJECT_NAME}_UnitTest)

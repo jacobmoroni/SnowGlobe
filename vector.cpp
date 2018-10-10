@@ -89,4 +89,11 @@ namespace phys {
             z=this->getZ();
         return Vector{x,y,z};
     }
+
+    void Vector::setVector(float x, float y, float z)
+    {
+        this->m_x = x;
+        this->m_y = y;
+        this->m_z = z;
+    }
 }

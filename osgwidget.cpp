@@ -1,62 +1,30 @@
 #include "osgwidget.h"
 
 #include <osg/Camera>
-//#include <osg/DisplaySettings>
 #include <osg/Geode>
 #include <osg/Material>
-//#include <osg/Shape>
 #include <osg/ShapeDrawable>
 #include <osg/StateSet>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
 #include <osg/Material>
 #include <osg/NodeVisitor>
-//#include <osg/LineWidth>
 
-//#include <osgDB/WriteFile>
 #include <osgGA/EventQueue>
 #include <osgViewer/View>
 #include <osgViewer/ViewerEventHandlers>
-//#include <osg/MatrixTransform>
-//#include <osgUtil/SmoothingVisitor>
-//#include <osgPartricle/FireEffect>
 
-//#include <cassert>
 #include <vector>
 
 #include <QKeyEvent>
 #include <QPainter>
 #include <QWheelEvent>
+#include "physics.h"
+#include "vector.h"
+#include "sphere.h"
+#include "sphereupdatecallback.h"
 
-class SphereUpdateCallback: public osg::NodeCallback
-{
-public:
-    SphereUpdateCallback(){}
 
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        if(m_up)
-            m_count++;
-        else
-            m_count--;
-
-        osg::Vec3d position{m_scale_step*m_count-1.0, m_scale_step*m_count+1.0, 0.0};
-//        osg::Vec3d scale_factor{m_scale_step*m_count+1.0, 1.0, 1.0};
-        osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
-//        pat->setScale(scale_factor);
-        pat->setPosition(position);
-
-        traverse(node, nv);
-
-        if(m_count==30 || m_count==0)
-            m_up=!m_up;
-    }
-
-protected:
-    bool m_up{true};
-    unsigned int m_count{0};
-    double m_scale_step{1.0/30.0};
-};
 
 OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     QOpenGLWidget{parent,flags},
@@ -100,7 +68,20 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
     float radius{1.f};
     osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
-    osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz, radius, sphere_color_rgba)};
+
+    float sphere_radius{1};
+    phys::Vector position{0,0,0};
+    phys::Vector velocity{7,0,0};
+    phys::Vector accel{0,0,-9.8};
+    m_sphere = new Sphere(position,
+                          velocity,
+                          sphere_radius,
+                          accel);
+
+    osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz,
+                                        radius,
+                                        sphere_color_rgba,
+                                        m_sphere)};
     m_root->addChild(sphere);
 
     osg::Vec4 box_color_rgba(0.f,0.f,0.f,1.f);
@@ -116,6 +97,12 @@ OSGWidget::~OSGWidget()
 
 void OSGWidget::timerEvent(QTimerEvent *event)
 {
+    phys_obj.updatePosition(m_sphere->getPosition(),
+                            m_sphere->getVelocity(),
+                            m_sphere->getAcceleration(),
+                            m_sphere->getDragForce(),
+                            m_sphere->getMass());
+    phys_obj.bounceOffWallWhenCollisionDetected(m_sphere,phys::Vector{5,5,5},phys::Vector{-5,-5,-5});
     update();
 }
 
@@ -277,7 +264,8 @@ osg::ref_ptr<osgGA::TrackballManipulator> OSGWidget::setUpTrackballManipulator(o
 
 osg::Node *OSGWidget::setUpSphere(osg::Vec3 center_of_sphere_xyz,
                                   float radius,
-                                  osg::Vec4 sphere_color_rgba)
+                                  osg::Vec4 sphere_color_rgba,
+                                  Sphere *sphere)
 {
     osg::Geode* sphere_geode{this->generateSphereGeode(center_of_sphere_xyz,
                                            radius,
@@ -285,7 +273,7 @@ osg::Node *OSGWidget::setUpSphere(osg::Vec3 center_of_sphere_xyz,
 
     osg::PositionAttitudeTransform *transform{new osg::PositionAttitudeTransform};
     transform->setPosition(center_of_sphere_xyz);
-    transform->setUpdateCallback(new SphereUpdateCallback());
+    transform->setUpdateCallback(new SphereUpdateCallback{m_sphere});
     transform->addChild(sphere_geode);
     return transform;
 }

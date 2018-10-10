@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "vector.h"
+#include "physics.h"
 
 bool expectNear(phys::Vector vec1, phys::Vector vec2, float threshold)
 {
@@ -8,7 +9,6 @@ bool expectNear(phys::Vector vec1, phys::Vector vec2, float threshold)
     float abs_x{(vec1.getX()-vec2.getX())};
     float abs_y{(vec1.getY()-vec2.getY())};
     float abs_z{(vec1.getZ()-vec2.getZ())};
-//    std::cout<<abs_x<<" "<<abs_y<<" "<<abs_z<<std::endl;
     if (abs_x<=threshold && abs_x>=-threshold && abs_y<=threshold && abs_y >= -threshold && abs_z<=threshold && abs_z>=-threshold)
         return true;
     else
@@ -27,30 +27,30 @@ TEST(GivenSingleVector,whenInializingVectors_MembersAreCorrect)
 TEST(GivenSingleVector, whenInvertingVector_OutputIsCorrect)
 {
     phys::Vector vec1{1.0,2.0,3.0};
-    phys::Vector goldenVector{-1.0,-2.0,-3.0};
-    EXPECT_EQ(goldenVector,-vec1);
+    phys::Vector golden_vector{-1.0,-2.0,-3.0};
+    EXPECT_EQ(golden_vector,-vec1);
 }
 
 TEST(Given2Vectors,whenAdding2Vectors_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
     phys::Vector vec2{1.0, 2.0, 3.0};
-    phys::Vector answerVector{vec1+vec2};
-    phys::Vector goldenVector{2.0,4.0,6.0};
+    phys::Vector answer_vector{vec1+vec2};
+    phys::Vector golden_vector{2.0,4.0,6.0};
 
-    EXPECT_EQ(2.0,answerVector.getX());
-    EXPECT_EQ(4.0,answerVector.getY());
-    EXPECT_EQ(6.0,answerVector.getZ());
-    EXPECT_EQ(goldenVector,vec1+vec2);
+    EXPECT_EQ(2.0,answer_vector.getX());
+    EXPECT_EQ(4.0,answer_vector.getY());
+    EXPECT_EQ(6.0,answer_vector.getZ());
+    EXPECT_EQ(golden_vector,vec1+vec2);
 }
 
 TEST(Given2Vectors,whenSubtracting2Vectors_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
     phys::Vector vec2{3.0, 5.0, 1.0};
-    phys::Vector goldenVector{-2.0,-3.0,2.0};
+    phys::Vector golden_vector{-2.0,-3.0,2.0};
 
-    EXPECT_EQ(goldenVector,vec1-vec2);
+    EXPECT_EQ(golden_vector,vec1-vec2);
 }
 
 TEST(GivenVectorAndNumber, whenMultiplyingByNumber_OutputIsCorrect)
@@ -58,8 +58,8 @@ TEST(GivenVectorAndNumber, whenMultiplyingByNumber_OutputIsCorrect)
     phys::Vector vec1{1.0, 2.0, 3.0};
     float number{0.1};
 
-    phys::Vector goldenVector{0.1,0.2,0.3};
-    EXPECT_EQ(goldenVector,vec1*number);
+    phys::Vector golden_vector{0.1,0.2,0.3};
+    EXPECT_EQ(golden_vector,vec1*number);
 }
 
 TEST(GivenVectorAndNumber, whenAddingNumber_OutputIsCorrect)
@@ -67,8 +67,8 @@ TEST(GivenVectorAndNumber, whenAddingNumber_OutputIsCorrect)
     phys::Vector vec1{1.0, 2.0, 3.0};
     float number{3.2};
 
-    phys::Vector goldenVector{4.2,5.2,6.2};
-    EXPECT_EQ(goldenVector,vec1+number);
+    phys::Vector golden_vector{4.2,5.2,6.2};
+    EXPECT_EQ(golden_vector,vec1+number);
 }
 
 TEST(GivenVectorAndNumber, whenSubtractingNumber_OutputIsCorrect)
@@ -76,53 +76,136 @@ TEST(GivenVectorAndNumber, whenSubtractingNumber_OutputIsCorrect)
     phys::Vector vec1{1.0, 2.0, 3.0};
     float number{0.1};
 
-    phys::Vector goldenVector{0.9,1.9,2.9};
-    EXPECT_EQ(goldenVector,vec1-number);
+    phys::Vector golden_vector{0.9,1.9,2.9};
+    EXPECT_EQ(golden_vector,vec1-number);
 }
 
 
-
-//class PhysicsNoGravity : public Physics, public ::testing:Test
-//{
-
-//};
-
-
-void updateVelocity(phys::Vector &velocity, phys::Vector &accel, float dt)
-{
-    velocity = velocity+(accel*dt);
-}
-
-void updatePosition(phys::Vector &position, phys::Vector &velocity, phys::Vector &accel, float dt)
-{
-    updateVelocity(velocity, accel, dt);
-    position = position + (velocity*dt);
-}
-
-void updateAcceleration(phys::Vector &acc, float mass, phys::Vector drag_force, float dt)
-{
-    acc = acc+(drag_force/mass);
-}
 
 TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
 {
     phys::Vector velocity{7.0,0,0};
     phys::Vector accel{0,0,-9.8};
     phys::Vector position{0,0,0};
+    phys::Vector drag_force{0,0,0};
+    float mass = 1.0;
     float dt = 0.1;
-    phys::Vector golden_velocity_1_time_step{7.0,0.0,-0.98};
-    phys::Vector golden_position_1_time_step{0.7,0.0,-0.098};
-    updatePosition(position,velocity,accel,dt);
-    EXPECT_EQ(velocity,golden_velocity_1_time_step);
+    phys::Vector golden_velocity_1_time_step{7.0,0.0,-0.326667};
+    phys::Vector golden_position_1_time_step{0.23333,0.0,-0.0108889};
+    phys::Physics physics;
+    physics.updatePosition(position,velocity,accel,drag_force,mass);
+
+    EXPECT_TRUE(expectNear(velocity, golden_velocity_1_time_step, 0.001));
+    EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.001));
+}
+
+TEST(givenInitaialState, after2TimeSteps_StateIsCorrect)
+{
+    phys::Vector velocity{7.0,0,0};
+    phys::Vector accel{0,0,-9.8};
+    phys::Vector position{0,0,0};
+    phys::Vector drag_force{0,0,0};
+    float mass = 1.0;
+    float dt = 0.1;
+    phys::Vector golden_velocity_1_time_step{7.0,0.0,-.653334};
+    phys::Vector golden_position_1_time_step{0.46667,0.0,-0.032667};
+    phys::Physics physics;
+    physics.updatePosition(position,velocity,accel,drag_force,mass);
+    physics.updatePosition(position,velocity,accel,drag_force,mass);
+
+    EXPECT_TRUE(expectNear(velocity,golden_velocity_1_time_step, 0.001));
     EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.0001));
 }
 
-TEST(given,d)
+TEST(givenCollidingPosition, whenCollisionIsChecked_ReturnsCollision)
 {
-    float acc{1.5};
-    float mass{5.0};
-    float drag{.05};
-//    float acc_new = advanceAcceleration(acc,mass,drag);
-    EXPECT_EQ(0,0);
+    int x_wall{1};
+    int y_wall{2};
+    int z_wall{3};
 
+    phys::Vector positionx{-5,0,0};
+    phys::Vector positiony{0,5,0};
+    phys::Vector positionz{0,0,5};
+    float radius{0.5};
+
+    phys::Vector box_top_right{5,5,5};
+    phys::Vector box_bottom_left{-5,-5,-5};
+    phys::Physics physics;
+    EXPECT_EQ(x_wall,physics.checkForCollission(positionx, box_top_right, box_bottom_left, radius));
+    EXPECT_EQ(y_wall,physics.checkForCollission(positiony, box_top_right, box_bottom_left, radius));
+    EXPECT_EQ(z_wall,physics.checkForCollission(positionz, box_top_right, box_bottom_left, radius));
+}
+
+TEST(givenNonCollidingPosition, whenCollisionIsChecked_ReturnsNoCollision)
+{
+    int none{0};
+    phys::Vector positionx{-3,1,0};
+    phys::Vector positiony{2,4,0};
+    phys::Vector positionz{1,1,1};
+    float radius{0.5};
+
+
+    phys::Vector box_top_right{5,5,5};
+    phys::Vector box_bottom_left{-5,-5,-5};
+    phys::Physics physics;
+    EXPECT_EQ(none,physics.checkForCollission(positionx, box_top_right, box_bottom_left, radius));
+    EXPECT_EQ(none,physics.checkForCollission(positiony, box_top_right, box_bottom_left, radius));
+    EXPECT_EQ(none,physics.checkForCollission(positionz, box_top_right, box_bottom_left, radius));
+}
+
+TEST(givenCollidingPosition, whenXCollisionIsFound_XVelocityReverses)
+{
+    float sphere_radius{1};
+    phys::Vector position{5,0,0};
+    phys::Vector velocity{7,7,7};
+    phys::Vector accel{0,0,-9.8};
+    Sphere* sphere = new Sphere(position,
+                        velocity,
+                        sphere_radius,
+                        accel);
+    phys::Vector box_top_right{5,5,5};
+    phys::Vector box_bottom_left{-5,-5,-5};
+    phys::Physics physics;
+    physics.bounceOffWallWhenCollisionDetected(sphere,box_top_right,box_bottom_left);
+    phys::Vector golden_velocity{-5.6,7,7};
+
+    EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
+}
+
+TEST(givenCollidingPosition, whenYCollisionIsFound_YVelocityReverses)
+{
+    float sphere_radius{1};
+    phys::Vector position{0,-5,0};
+    phys::Vector velocity{7,7,7};
+    phys::Vector accel{0,0,-9.8};
+    Sphere* sphere = new Sphere(position,
+                        velocity,
+                        sphere_radius,
+                        accel);
+    phys::Vector box_top_right{5,5,5};
+    phys::Vector box_bottom_left{-5,-5,-5};
+    phys::Physics physics;
+    physics.bounceOffWallWhenCollisionDetected(sphere,box_top_right,box_bottom_left);
+    phys::Vector golden_velocity{7,-5.6,7};
+
+    EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
+}
+
+TEST(givenCollidingPosition, whenZCollisionIsFound_ZVelocityReverses)
+{
+    float sphere_radius{1};
+    phys::Vector position{0,0,5};
+    phys::Vector velocity{7,7,7};
+    phys::Vector accel{0,0,-9.8};
+    Sphere* sphere = new Sphere(position,
+                        velocity,
+                        sphere_radius,
+                        accel);
+    phys::Vector box_top_right{5,5,5};
+    phys::Vector box_bottom_left{-5,-5,-5};
+    phys::Physics physics;
+    physics.bounceOffWallWhenCollisionDetected(sphere,box_top_right,box_bottom_left);
+    phys::Vector golden_velocity{7,7,-5.6};
+
+    EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
 }

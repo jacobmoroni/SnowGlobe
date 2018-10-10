@@ -2,13 +2,13 @@
 #define MEEN_570_OSGWIDGET
 
 #include <QOpenGLWidget>
-//#include <QVector4D>
 #include <osg/ref_ptr>
 #include <osg/Node>
-//#include <osgViewer/GraphicsWindow>
 #include <osgViewer/CompositeViewer>
 #include <osgGA/TrackballManipulator>
-//#include <osgText/Text>
+#include "vector.h"
+#include "physics.h"
+#include "sphere.h"
 
 class OSGWidget : public QOpenGLWidget
 {
@@ -45,7 +45,8 @@ protected:
                                                                       osg::Vec3d world_up_vector_xyz);
   osg::Node* setUpSphere(osg::Vec3 center_of_sphere_xyz,
                          float radius,
-                         osg::Vec4 sphere_color_rgba);
+                         osg::Vec4 sphere_color_rgba,
+                         Sphere *sphere);
 
   osg::Geode* generateSphereGeode(osg::Vec3 center_of_sphere_xyz,
                              float radius,
@@ -63,6 +64,8 @@ private:
   osg::ref_ptr<osgViewer::View> m_view;
   osg::ref_ptr<osg::Group> m_root;
   int m_timer_id{0};
+  phys::Physics phys_obj;
+  Sphere *m_sphere;
 };
 
 #endif
