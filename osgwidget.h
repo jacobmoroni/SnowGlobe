@@ -52,9 +52,13 @@ protected:
                              float radius,
                              osg::Vec4 sphere_color_rgba);
   unsigned int getMouseButtonNumber(QMouseEvent* event);
-  osg::Node* createWireframeCube(osg::Vec4 &color, osg::Vec3d &scaleFactor);
-  void setUpMView(osg::Camera* camera, osg::ref_ptr<osgGA::TrackballManipulator> manipulator);
-  void setUpMViewer();
+  osg::Node* createWireframeCube(osg::Vec4 &color);
+  void setUpMView();
+  void setupMViewer();
+
+  void startMyTimer();
+  
+  void setupWorld();
 
 private:
   virtual void on_resize( int width, int height );
