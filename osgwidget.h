@@ -19,7 +19,8 @@ public:
              Qt::WindowFlags f = 0);
 
   virtual ~OSGWidget();
-
+  void startMyTimer();
+  void stopMyTimer();
 protected:
   void timerEvent(QTimerEvent *event);
   virtual void paintEvent(QPaintEvent* paintEvent);
@@ -55,9 +56,6 @@ protected:
   osg::Node* createWireframeCube(osg::Vec4 &color);
   void setUpMView();
   void setupMViewer();
-
-  void startMyTimer();
-  
   void setupWorld();
 
 private:

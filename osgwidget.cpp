@@ -33,11 +33,15 @@ void OSGWidget::startMyTimer()
     double timer_duration_in_milliseconds{time_step *1000};
     m_timer_id=startTimer(timer_duration_in_milliseconds);
 }
+void OSGWidget::stopMyTimer()
+{
+    killTimer(m_timer_id);
+}
 
 void OSGWidget::setupWorld()
 {
     osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
-    float radius{1.f};
+    float sphere_radius{1.f};
     osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
     phys::Vector position{0,0,0};
     phys::Vector velocity{7,0,0};
@@ -48,7 +52,7 @@ void OSGWidget::setupWorld()
                           accel);
 
     osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz,
-                                        radius,
+                                        sphere_radius,
                                         sphere_color_rgba,
                                         m_sphere)};
     m_root->addChild(sphere);
@@ -76,7 +80,7 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
 
     this->setupMViewer();
 
-    m_root->addChild(sphere);
+//    m_root->addChild(sphere);
     this->setupWorld();
 
     this->startMyTimer();
@@ -84,7 +88,6 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
 
 OSGWidget::~OSGWidget()
 {
-    killTimer(m_timer_id);
 }
 
 void OSGWidget::timerEvent(QTimerEvent *event)

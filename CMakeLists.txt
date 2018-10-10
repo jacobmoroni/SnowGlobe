@@ -43,8 +43,12 @@ SET(MYSOURCE
 
 set(TEST_NAME ${PROJECT_NAME}_UnitTest)
 
+set( MYRESOURCES icons/icons.qrc)
+
 add_executable(${PROJECT_NAME}
-    ${MYSOURCE})
+   ${MYSOURCE}
+   ${MYRESOURCES}
+   )
 
 target_link_libraries(${PROJECT_NAME}
     ${OPENSCENEGRAPH_LIBRARIES}
