@@ -33,6 +33,7 @@ namespace phys {
         const int y_wall_neg{5};
         const int z_wall_neg{6};
         float overshoot{0.0};
+
         switch (collision_detection) {
         case x_wall_pos:
             overshoot = box_top_right.getX()-(sphere->getPosition().getX()+sphere->getRadius());

@@ -44,7 +44,7 @@ void OSGWidget::setupWorld()
     float sphere_radius{1.f};
     osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
     phys::Vector position{0,0,0};
-    phys::Vector velocity{7,0,0};
+    phys::Vector velocity{7,7,7};
     phys::Vector accel{0,0,-9.8};
     m_sphere = new Sphere(position,
                           velocity,
@@ -77,12 +77,8 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     unsigned int min_height{100};
     this->setMinimumSize(min_width, min_height);
     this->setMouseTracking(true);
-
     this->setupMViewer();
-
-//    m_root->addChild(sphere);
     this->setupWorld();
-
     this->startMyTimer();
 }
 
