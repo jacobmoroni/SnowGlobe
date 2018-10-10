@@ -14,7 +14,6 @@ namespace phys {
                                Vector box_top_right,
                                Vector box_bottom_left,
                                float radius);
-
         void bounceOffWallWhenCollisionDetected(Sphere *sphere,
                                                 Vector box_top_right,
                                                 Vector box_bottom_left);

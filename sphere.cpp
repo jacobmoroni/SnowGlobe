@@ -56,14 +56,14 @@ phys::Vector Sphere::getDragForce()
 }
 
 float Sphere::getCoeffRestitution()
- {
-     return m_coeff_restitution;
- }
+{
+    return m_coeff_restitution;
+}
 
 void Sphere::setCoeffRestitution(float value)
- {
-     m_coeff_restitution = value;
- }
+{
+    m_coeff_restitution = value;
+}
 
 float Sphere::getMass()
 {

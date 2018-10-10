@@ -27,4 +27,5 @@ namespace phys {
         float m_z{0};
     };
 }
+
 #endif // VECTOR_H

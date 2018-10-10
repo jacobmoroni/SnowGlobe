@@ -92,7 +92,6 @@ namespace phys {
         const int y_wall_neg{5};
         const int z_wall_neg{6};
 
-
         if (position.getX()+radius >= box_top_right.getX())
             return x_wall_pos;
         else if (position.getX()-radius <= box_bottom_left.getX())

@@ -22,8 +22,8 @@ SET(CMAKE_AUTOUIC ON)
 SET(CMAKE_AUTORCC ON)
 
 add_library(PhysicsLib STATIC
-    physics.h
     physics.cpp
+    physics.h
     vector.cpp
     vector.h
     sphere.cpp

@@ -22,8 +22,6 @@
 #include "sphere.h"
 #include "sphereupdatecallback.h"
 
-
-
 void OSGWidget::startMyTimer()
 {
     double frames_per_second{30};
@@ -31,6 +29,7 @@ void OSGWidget::startMyTimer()
     double timer_duration_in_milliseconds{time_step *1000};
     m_timer_id=startTimer(timer_duration_in_milliseconds);
 }
+
 void OSGWidget::stopMyTimer()
 {
     killTimer(m_timer_id);
@@ -311,7 +310,6 @@ unsigned int OSGWidget::getMouseButtonNumber(QMouseEvent* event)
 
     return button;
 }
-
 
 osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color)
 {
