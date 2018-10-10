@@ -36,7 +36,7 @@ namespace phys {
 
     Vector Vector::operator /(float number)
     {
-        return Vector{this->m_x/number,this->m_y/number,this->m_z*number};
+        return Vector{this->m_x/number,this->m_y/number,this->m_z/number};
     }
 
     Vector Vector::operator *(float number)
@@ -90,10 +90,10 @@ namespace phys {
         return Vector{x,y,z};
     }
 
-    void Vector::setVector(float x, float y, float z)
+    void Vector::setVector(Vector vec)
     {
-        this->m_x = x;
-        this->m_y = y;
-        this->m_z = z;
+        this->m_x = vec.getX();
+        this->m_y = vec.getY();
+        this->m_z = vec.getZ();
     }
 }

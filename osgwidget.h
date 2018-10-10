@@ -3,6 +3,8 @@
 
 #include <QOpenGLWidget>
 #include <osg/ref_ptr>
+#include <osg/Camera>
+#include <osg/Geode>
 #include <osg/Node>
 #include <osgViewer/CompositeViewer>
 #include <osgGA/TrackballManipulator>

@@ -62,6 +62,15 @@ TEST(GivenVectorAndNumber, whenMultiplyingByNumber_OutputIsCorrect)
     EXPECT_EQ(golden_vector,vec1*number);
 }
 
+TEST(GivenVectorAndNumber, whenDivdingByNumber_OutputIsCorrect)
+{
+    phys::Vector vec1{1.0, 2.0, 3.0};
+    float number{2.0};
+
+    phys::Vector golden_vector{0.5,1.0,1.5};
+    EXPECT_EQ(golden_vector,vec1/number);
+}
+
 TEST(GivenVectorAndNumber, whenAddingNumber_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
@@ -85,16 +94,17 @@ TEST(Given0InitialState, whenTimeStepOccurs_StateIsCorrect)
     phys::Vector velocity{0,0,0};
     phys::Vector accel{0,0,0};
     phys::Vector position{0,0,0};
-    phys::Vector drag_force{0,0,0};
-    float mass = 1.0;
-    float dt = 0.1;
+    float radius{1.0};
+    Sphere *sphere = new Sphere(position,velocity,accel,radius);
+
     phys::Vector golden_velocity_1_time_step{0.0,0.0,0.0};
     phys::Vector golden_position_1_time_step{0.0,0.0,0.0};
     phys::Physics physics;
-    physics.updatePosition(position,velocity,accel,drag_force,mass);
+    physics.updatePosition(sphere);
 
     EXPECT_TRUE(expectNear(velocity, golden_velocity_1_time_step, 0.001));
-    EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.001));
+    EXPECT_TRUE(expectNear(sphere->getVelocity(), golden_position_1_time_step, 0.001));
+    delete sphere;
 }
 
 TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
@@ -102,16 +112,16 @@ TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
     phys::Vector velocity{7.0,0,0};
     phys::Vector accel{0,0,-9.8};
     phys::Vector position{0,0,0};
-    phys::Vector drag_force{0,0,0};
-    float mass = 1.0;
-    float dt = 0.1;
+    float radius{1.0};
+    Sphere *sphere = new Sphere(position,velocity,accel,radius);
     phys::Vector golden_velocity_1_time_step{7.0,0.0,-0.326667};
     phys::Vector golden_position_1_time_step{0.23333,0.0,-0.0108889};
     phys::Physics physics;
-    physics.updatePosition(position,velocity,accel,drag_force,mass);
+    physics.updatePosition(sphere);
 
-    EXPECT_TRUE(expectNear(velocity, golden_velocity_1_time_step, 0.001));
-    EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.001));
+    EXPECT_TRUE(expectNear(sphere->getVelocity(), golden_velocity_1_time_step, 0.001));
+    EXPECT_TRUE(expectNear(sphere->getPosition(), golden_position_1_time_step, 0.001));
+    delete sphere;
 }
 
 TEST(givenInitaialState, after2TimeSteps_StateIsCorrect)
@@ -119,17 +129,17 @@ TEST(givenInitaialState, after2TimeSteps_StateIsCorrect)
     phys::Vector velocity{7.0,0,0};
     phys::Vector accel{0,0,-9.8};
     phys::Vector position{0,0,0};
-    phys::Vector drag_force{0,0,0};
-    float mass = 1.0;
-    float dt = 0.1;
+    float radius{0.1};
+    Sphere *sphere = new Sphere(position,velocity,accel,radius);
     phys::Vector golden_velocity_1_time_step{7.0,0.0,-.653334};
     phys::Vector golden_position_1_time_step{0.46667,0.0,-0.032667};
     phys::Physics physics;
-    physics.updatePosition(position,velocity,accel,drag_force,mass);
-    physics.updatePosition(position,velocity,accel,drag_force,mass);
+    physics.updatePosition(sphere);
+    physics.updatePosition(sphere);
 
-    EXPECT_TRUE(expectNear(velocity,golden_velocity_1_time_step, 0.001));
-    EXPECT_TRUE(expectNear(position, golden_position_1_time_step, 0.0001));
+    EXPECT_TRUE(expectNear(sphere->getVelocity(),golden_velocity_1_time_step, 0.001));
+    EXPECT_TRUE(expectNear(sphere->getPosition(), golden_position_1_time_step, 0.0001));
+    delete sphere;
 }
 
 TEST(givenCollidingPosition, whenCollisionIsChecked_ReturnsCollision)
@@ -187,8 +197,8 @@ TEST(givenCollidingPosition, whenXCollisionIsFound_XVelocityReverses)
     phys::Vector accel{0,0,-9.8};
     Sphere* sphere = new Sphere(position,
                         velocity,
-                        sphere_radius,
-                        accel);
+                        accel,
+                        sphere_radius);
     phys::Vector box_top_right{5,5,5};
     phys::Vector box_bottom_left{-5,-5,-5};
     phys::Physics physics;
@@ -196,6 +206,7 @@ TEST(givenCollidingPosition, whenXCollisionIsFound_XVelocityReverses)
     phys::Vector golden_velocity{-5.6,5.6,5.6};
 
     EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
+    delete sphere;
 }
 
 TEST(givenCollidingPosition, whenYCollisionIsFound_YVelocityReverses)
@@ -206,8 +217,8 @@ TEST(givenCollidingPosition, whenYCollisionIsFound_YVelocityReverses)
     phys::Vector accel{0,0,-9.8};
     Sphere* sphere = new Sphere(position,
                         velocity,
-                        sphere_radius,
-                        accel);
+                        accel,
+                        sphere_radius);
     phys::Vector box_top_right{5,5,5};
     phys::Vector box_bottom_left{-5,-5,-5};
     phys::Physics physics;
@@ -215,6 +226,7 @@ TEST(givenCollidingPosition, whenYCollisionIsFound_YVelocityReverses)
     phys::Vector golden_velocity{5.6,-5.6,5.6};
 
     EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
+    delete sphere;
 }
 
 TEST(givenCollidingPosition, whenZCollisionIsFound_ZVelocityReverses)
@@ -225,8 +237,8 @@ TEST(givenCollidingPosition, whenZCollisionIsFound_ZVelocityReverses)
     phys::Vector accel{0,0,-9.8};
     Sphere* sphere = new Sphere(position,
                         velocity,
-                        sphere_radius,
-                        accel);
+                        accel,
+                        sphere_radius);
     phys::Vector box_top_right{5,5,5};
     phys::Vector box_bottom_left{-5,-5,-5};
     phys::Physics physics;
@@ -234,4 +246,5 @@ TEST(givenCollidingPosition, whenZCollisionIsFound_ZVelocityReverses)
     phys::Vector golden_velocity{5.6,5.6,-5.6};
 
     EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
+    delete sphere;
 }

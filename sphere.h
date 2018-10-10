@@ -7,17 +7,25 @@ class Sphere
 {
 public:
     Sphere();
-    Sphere(phys::Vector position, phys::Vector velocity, float radius, phys::Vector accel);
+    Sphere(phys::Vector position, phys::Vector velocity, phys::Vector accel, float radius);
+
     float getRadius();
     void setRadius(float value);
-    phys::Vector &getPosition();
-    void setPosition(float x, float y, float z);
-    phys::Vector &getVelocity();
-    void setVelocity(float x, float y,float z);
+
+    phys::Vector getPosition();
+    void setPosition(phys::Vector pos);
+
+    phys::Vector getVelocity();
+    void setVelocity(phys::Vector vel);
+
+    phys::Vector getAcceleration();
+    void setAcceleration(phys::Vector acc);
+
+    phys::Vector getDragForce();
+
     float getCoeffRestitution();
     void setCoeffRestitution(float value);
-    phys::Vector &getAcceleration();
-    phys::Vector getDragForce();
+
     float getMass();
 
 private:

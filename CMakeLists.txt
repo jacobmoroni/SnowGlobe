@@ -55,7 +55,7 @@ target_link_libraries(${PROJECT_NAME}
     PhysicsLib
     Qt5::Widgets
     Qt5::Gui
-)
+    )
 
 add_executable(${TEST_NAME}
     physics_unittests.cpp
@@ -64,4 +64,5 @@ add_executable(${TEST_NAME}
 target_link_libraries(${TEST_NAME}
     PhysicsLib
     gtest
-    gtest_main)
+    gtest_main
+    )

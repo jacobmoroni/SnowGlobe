@@ -5,21 +5,21 @@
 namespace phys {
     Physics::Physics(){}
 
-    void Physics::updateAcceleration(Vector &accel, Vector drag_force, float mass)
+    void Physics::updateAcceleration(Sphere *sphere)
     {
-        accel = accel+(drag_force/mass);
+        sphere->setAcceleration(Vector{sphere->getAcceleration()+(sphere->getDragForce()/sphere->getMass())});
     }
 
-    void Physics::updateVelocity(Vector &velocity, Vector &accel, Vector drag_force, float mass)
+    void Physics::updateVelocity(Sphere *sphere)
     {
-        this->updateAcceleration(accel, drag_force, mass);
-        velocity = velocity+(accel*m_dt);
+        this->updateAcceleration(sphere);
+        sphere->setVelocity(Vector{sphere->getVelocity()+(sphere->getAcceleration()*m_dt)});
     }
 
-    void Physics::updatePosition(Vector &position, Vector &velocity, Vector &accel, Vector drag_force, float mass)
+    void Physics::updatePosition(Sphere *sphere)
     {
-        this->updateVelocity(velocity, accel, drag_force, mass);
-        position = position + (velocity*m_dt);
+        this->updateVelocity(sphere);
+        sphere->setPosition(Vector{sphere->getPosition() + sphere->getVelocity()*m_dt});
     }
 
     void Physics::bounceOffWallWhenCollisionDetected(Sphere *sphere, Vector box_top_right, Vector box_bottom_left)
@@ -37,45 +37,45 @@ namespace phys {
         switch (collision_detection) {
         case x_wall_pos:
             overshoot = box_top_right.getX()-(sphere->getPosition().getX()+sphere->getRadius());
-            sphere->setVelocity(-sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
+            sphere->setVelocity(Vector{-sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
                                 sphere->getCoeffRestitution()*sphere->getVelocity().getY(),
-                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ());
-            sphere->setPosition(sphere->getPosition().getX()+overshoot,sphere->getPosition().getY(),sphere->getPosition().getZ());
+                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ()});
+            sphere->setPosition(Vector{sphere->getPosition().getX()+overshoot,sphere->getPosition().getY(),sphere->getPosition().getZ()});
             break;
         case y_wall_pos:
             overshoot = box_top_right.getY()-(sphere->getPosition().getY()+sphere->getRadius());
-            sphere->setVelocity(sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
+            sphere->setVelocity(Vector{sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
                                 -sphere->getCoeffRestitution()*sphere->getVelocity().getY(),
-                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ());
-            sphere->setPosition(sphere->getPosition().getX(),sphere->getPosition().getY()+overshoot,sphere->getPosition().getZ());
+                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ()});
+            sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY()+overshoot,sphere->getPosition().getZ()});
             break;
         case z_wall_pos:
             overshoot = box_top_right.getZ()-(sphere->getPosition().getZ()+sphere->getRadius());
-            sphere->setVelocity(sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
+            sphere->setVelocity(Vector{sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
                                 sphere->getCoeffRestitution()*sphere->getVelocity().getY(),
-                                -sphere->getCoeffRestitution()*sphere->getVelocity().getZ());
-            sphere->setPosition(sphere->getPosition().getX(),sphere->getPosition().getY(),sphere->getPosition().getZ()+overshoot);
+                                -sphere->getCoeffRestitution()*sphere->getVelocity().getZ()});
+            sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY(),sphere->getPosition().getZ()+overshoot});
             break;
         case x_wall_neg:
             overshoot = box_bottom_left.getX()-(sphere->getPosition().getX()-sphere->getRadius());
-            sphere->setVelocity(-sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
+            sphere->setVelocity(Vector{-sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
                                 sphere->getCoeffRestitution()*sphere->getVelocity().getY(),
-                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ());
-            sphere->setPosition(sphere->getPosition().getX()+overshoot,sphere->getPosition().getY(),sphere->getPosition().getZ());
+                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ()});
+            sphere->setPosition(Vector{sphere->getPosition().getX()+overshoot,sphere->getPosition().getY(),sphere->getPosition().getZ()});
             break;
         case y_wall_neg:
             overshoot = box_bottom_left.getY()-(sphere->getPosition().getY()-sphere->getRadius());
-            sphere->setVelocity(sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
+            sphere->setVelocity(Vector{sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
                                 -sphere->getCoeffRestitution()*sphere->getVelocity().getY(),
-                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ());
-            sphere->setPosition(sphere->getPosition().getX(),sphere->getPosition().getY()+overshoot,sphere->getPosition().getZ());
+                                sphere->getCoeffRestitution()*sphere->getVelocity().getZ()});
+            sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY()+overshoot,sphere->getPosition().getZ()});
             break;
         case z_wall_neg:
             overshoot = box_bottom_left.getZ()-(sphere->getPosition().getZ()-sphere->getRadius());
-            sphere->setVelocity(sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
+            sphere->setVelocity(Vector{sphere->getCoeffRestitution()*sphere->getVelocity().getX(),
                                 sphere->getCoeffRestitution()*sphere->getVelocity().getY(),
-                                -sphere->getCoeffRestitution()*sphere->getVelocity().getZ());
-            sphere->setPosition(sphere->getPosition().getX(),sphere->getPosition().getY(),sphere->getPosition().getZ()+overshoot);
+                                -sphere->getCoeffRestitution()*sphere->getVelocity().getZ()});
+            sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY(),sphere->getPosition().getZ()+overshoot});
             break;
         default:
             break;
@@ -108,5 +108,4 @@ namespace phys {
         else
             return none;
     }
-    float coeff_of_restitution{0.8};
 }

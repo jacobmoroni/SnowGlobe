@@ -7,8 +7,6 @@
 #include <osg/StateSet>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
-#include <osg/Material>
-#include <osg/NodeVisitor>
 
 #include <osgGA/EventQueue>
 #include <osgViewer/View>
@@ -48,8 +46,8 @@ void OSGWidget::setupWorld()
     phys::Vector accel{0,0,-9.8};
     m_sphere = new Sphere(position,
                           velocity,
-                          sphere_radius,
-                          accel);
+                          accel,
+                          sphere_radius);
 
     osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz,
                                         sphere_radius,
@@ -88,11 +86,7 @@ OSGWidget::~OSGWidget()
 
 void OSGWidget::timerEvent(QTimerEvent *event)
 {
-    phys_obj.updatePosition(m_sphere->getPosition(),
-                            m_sphere->getVelocity(),
-                            m_sphere->getAcceleration(),
-                            m_sphere->getDragForce(),
-                            m_sphere->getMass());
+    phys_obj.updatePosition(m_sphere);
     phys_obj.bounceOffWallWhenCollisionDetected(m_sphere,phys::Vector{5,5,5},phys::Vector{-5,-5,-5});
     update();
 }

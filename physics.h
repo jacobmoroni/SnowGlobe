@@ -9,26 +9,19 @@ namespace phys {
     {
     public:
         Physics();
-        void updatePosition(Vector &position,
-                            Vector &velocity,
-                            Vector &accel,
-                            Vector drag_force,
-                            float mass);
+        void updatePosition(Sphere *sphere);
         int checkForCollission(Vector position,
                                Vector box_top_right,
                                Vector box_bottom_left,
                                float radius);
-        void bounceOffWallWhenCollisionDetected(Sphere *sphere, Vector box_top_right, Vector box_bottom_left);
+
+        void bounceOffWallWhenCollisionDetected(Sphere *sphere,
+                                                Vector box_top_right,
+                                                Vector box_bottom_left);
 
     protected:
-        void updateAcceleration(Vector &accel,
-                                Vector drag_force,
-                                float mass);
-
-        void updateVelocity(Vector &velocity,
-                            Vector &accel,
-                            Vector drag_force,
-                            float mass);
+        void updateAcceleration(Sphere *sphere);
+        void updateVelocity(Sphere *sphere);
         float m_dt{1/30.0};
     };
 }

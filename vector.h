@@ -19,7 +19,7 @@ namespace phys {
         Vector operator- ();
         bool operator== (const Vector rhs) const;
         Vector abs();
-        void setVector(float x, float y, float z);
+        void setVector(Vector vec);
 
     private:
         float m_x{0};
