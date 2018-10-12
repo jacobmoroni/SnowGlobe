@@ -17,6 +17,10 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QWheelEvent>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "physics.h"
 #include "vector.h"
 #include "sphere.h"
@@ -35,28 +39,69 @@ void OSGWidget::stopMyTimer()
     killTimer(m_timer_id);
 }
 
+float OSGWidget::randomFloat(float min, float max)
+{
+//    assert(max > min);
+    float random = (rand()/(float)RAND_MAX);
+    float range = max - min;
+    return (random*range) + min;
+}
+
+void OSGWidget::generateNewSpheres(int num_spheres, float rad_max, float rad_min, float mass_max, float mass_min, float cr_max, float cr_min)
+{
+    srand (time(NULL));
+    float max_vel{6.0};
+    for (int i=0;i<num_spheres;i++)
+    {
+        float radius{randomFloat(rad_min, rad_max)};
+        float mass{randomFloat(mass_min, mass_max)};
+        float coeff_restitution{randomFloat(cr_min, cr_max)};
+
+        float pos_x{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+        float pos_y{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+        float pos_z{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+
+        float vel_x{randomFloat(-max_vel,max_vel)};
+        float vel_y{randomFloat(-max_vel,max_vel)};
+        float vel_z{randomFloat(-max_vel,max_vel)};
+
+        float color_r{randomFloat(0,1)};
+        float color_g{randomFloat(0,1)};
+        float color_b{randomFloat(0,1)};
+        float color_a{randomFloat(0,1)};
+
+        osg::Vec3 center_of_sphere_xyz{0,0,0};
+        osg::Vec4 sphere_color_rgba{color_r, color_g, color_b, color_a};
+        phys::Vector position{pos_x, pos_y, pos_z};
+        phys::Vector velocity{vel_x, vel_y, vel_z};
+        phys::Vector accel = phys_obj.getGravity();
+        Sphere* new_sphere = new Sphere(position,
+                                        velocity,
+                                        accel,
+                                        radius,
+                                        mass,
+                                        coeff_restitution);
+
+        osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz,
+                                            radius,
+                                            sphere_color_rgba,
+                                            new_sphere)};
+        m_root->addChild(sphere);
+        m_spheres.push_back(new_sphere);
+    }
+}
+
 void OSGWidget::setupWorld()
 {
-    osg::Vec3 center_of_sphere_xyz{0.f, 0.f, 0.f};
-    float sphere_radius{1.f};
-    osg::Vec4 sphere_color_rgba{0.f, 1.f, 0.f, 0.f};
-    phys::Vector position{0,0,0};
-    phys::Vector velocity{7,0,0};
-    phys::Vector accel{0,0,-9.8};
-    m_sphere = new Sphere(position,
-                          velocity,
-                          accel,
-                          sphere_radius);
-
-    osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz,
-                                        sphere_radius,
-                                        sphere_color_rgba,
-                                        m_sphere)};
-    m_root->addChild(sphere);
-
     osg::Vec4 box_color_rgba(0.f,0.f,0.f,1.f);
-    osg::Node* box_transform{this->createWireframeCube(box_color_rgba)};
+    osg::Node* box_transform{this->createWireframeCube(box_color_rgba, m_box_size)};
     m_root->addChild(box_transform);
+}
+
+void OSGWidget::setWorldSettings(phys::Vector gravity, double density)
+{
+    phys_obj.setGravity(gravity);
+    phys_obj.setDensity(density);
 }
 
 OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
@@ -85,8 +130,14 @@ OSGWidget::~OSGWidget()
 
 void OSGWidget::timerEvent(QTimerEvent *event)
 {
-    phys_obj.updatePosition(m_sphere);
-    phys_obj.bounceOffWallWhenCollisionDetected(m_sphere,phys::Vector{5,5,5},phys::Vector{-5,-5,-5});
+    for (Sphere* sphere: m_spheres)
+    {
+        phys_obj.updatePosition(sphere);
+//        sphere->setAcceleration(phys_obj.getGravity());
+        phys_obj.bounceOffWallWhenCollisionDetected(sphere,
+                                                    phys::Vector{m_box_size,m_box_size,m_box_size},
+                                                    phys::Vector{-m_box_size,-m_box_size,-m_box_size});
+    }
     update();
 }
 
@@ -257,7 +308,7 @@ osg::Node *OSGWidget::setUpSphere(osg::Vec3 center_of_sphere_xyz,
 
     osg::PositionAttitudeTransform *transform{new osg::PositionAttitudeTransform};
     transform->setPosition(center_of_sphere_xyz);
-    transform->setUpdateCallback(new SphereUpdateCallback{m_sphere});
+    transform->setUpdateCallback(new SphereUpdateCallback{sphere});
     transform->addChild(sphere_geode);
     return transform;
 }
@@ -311,18 +362,18 @@ unsigned int OSGWidget::getMouseButtonNumber(QMouseEvent* event)
     return button;
 }
 
-osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color)
+osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color, float box_size)
 {
     osg::Vec3Array* v = new osg::Vec3Array;
     v->resize( 8 );
-    (*v)[0].set( 5.f, 5.f, -5.f );
-    (*v)[1].set(-5.f, 5.f, -5.f );
-    (*v)[2].set(-5.f, -5.f, -5.f );
-    (*v)[3].set(5.f, -5.f, -5.f );
-    (*v)[4].set(5.f, 5.f, 5.f );
-    (*v)[5].set(-5.f, 5.f, 5.f );
-    (*v)[6].set(-5.f, -5.f, 5.f );
-    (*v)[7].set(5.f, -5.f, 5.f );
+    (*v)[0].set( box_size, box_size, -box_size );
+    (*v)[1].set(-box_size, box_size, -box_size );
+    (*v)[2].set(-box_size, -box_size, -box_size );
+    (*v)[3].set(box_size, -box_size, -box_size );
+    (*v)[4].set(box_size, box_size, box_size );
+    (*v)[5].set(-box_size, box_size, box_size );
+    (*v)[6].set(-box_size, -box_size, box_size );
+    (*v)[7].set(box_size, -box_size, box_size );
 
     osg::Geometry* geom = new osg::Geometry;
     geom->setUseDisplayList( false );
@@ -347,8 +398,8 @@ osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color)
     geode->getOrCreateStateSet()->setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
     osg::PositionAttitudeTransform* transform = new osg::PositionAttitudeTransform;
 
-    osg::Vec3d scaleFactor(1.0,1.0,1.0);
-    transform->setScale(scaleFactor);
+//    osg::Vec3d scaleFactor(2.0,2.0,2.0);
+//    transform->setScale(scaleFactor);
 
     transform->addChild(geode);
     return transform;

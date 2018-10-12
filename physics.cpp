@@ -22,6 +22,11 @@ namespace phys {
         sphere->setPosition(Vector{sphere->getPosition() + sphere->getVelocity()*m_dt});
     }
 
+    void Physics::updateDragForce(Sphere *sphere)
+    {
+        //TODO: FINISH THIS EQNphys::Vector drag_force = (sphere->getVelocity()*m_velocity)*0.5*density*m_coeff_drag*m_area;
+    }
+
     void Physics::bounceOffWallWhenCollisionDetected(Sphere *sphere, Vector box_top_right, Vector box_bottom_left)
     {
         int collision_detection{checkForCollission(sphere->getPosition(), box_top_right, box_bottom_left, sphere->getRadius())};
@@ -106,5 +111,25 @@ namespace phys {
             return z_wall_neg;
         else
             return none;
+    }
+
+    void Physics::setGravity(Vector gravity)
+    {
+        m_gravity = gravity;
+    }
+
+    Vector Physics::getGravity()
+    {
+        return m_gravity;
+    }
+
+    void Physics::setDensity(float density)
+    {
+        m_density = density;
+    }
+
+    float Physics::getDensity()
+    {
+        return m_density;
     }
 }

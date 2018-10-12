@@ -21,11 +21,17 @@ public:
 protected:
     QAction* createStartAction();
     QAction* createPauseAction();
+    QAction* createRestartAction();
+    QAction* createGenerateAction();
+    QAction* createWorldAction();
     void createToolbar();
 public slots:
     void on_actionExit_triggered();
     void startSimulation();
     void pauseSimulation();
+    void restartSimulation();
+    void generateSpheres();
+    void worldSettings();
 
 private:
     Ui::MainWindowForm *m_main_window_ui;

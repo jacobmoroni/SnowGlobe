@@ -39,6 +39,12 @@ SET(MYSOURCE
     osgwidget.cpp
     sphereupdatecallback.cpp
     sphereupdatecallback.h
+    worldsettings.cpp
+    worldsettings.h
+    worldsettings.ui
+    spheregenerator.h
+    spheregenerator.cpp
+    spheregenerator.ui
     )
 
 set(TEST_NAME ${PROJECT_NAME}_UnitTest)

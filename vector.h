@@ -12,6 +12,7 @@ namespace phys {
         float getZ() const;
         Vector operator+ (Vector rhs);
         Vector operator- (Vector rhs);
+        Vector operator* (Vector rhs);
         Vector operator/ (float number);
         Vector operator* (float number);
         Vector operator+ (float number);

@@ -34,6 +34,10 @@ namespace phys {
         return Vector{this->m_x - rhs.m_x, this->m_y - rhs.m_y, this->m_z - rhs.m_z};
     }
 
+    Vector Vector::operator *(Vector rhs)
+    {
+        return Vector{this->m_x*rhs.getX(), this->m_y*rhs.getY(), this->m_z*rhs.getZ()};
+    }
     Vector Vector::operator /(float number)
     {
         return Vector{this->m_x/number,this->m_y/number,this->m_z/number};

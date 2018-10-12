@@ -2,5 +2,8 @@
    <qresource prefix="/myicons">
        <file>start.png</file>
        <file>pause.png</file>
+       <file>restart.png</file>
+       <file>generate.png</file>
+       <file>world.png</file>
    </qresource>
 </RCC>

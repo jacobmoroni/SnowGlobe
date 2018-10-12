@@ -5,8 +5,10 @@ Sphere::Sphere(){}
 Sphere::Sphere(phys::Vector postion,
                phys::Vector velocity,
                phys::Vector accel,
-               float radius) :
-    m_position{postion}, m_velocity{velocity}, m_accel{accel}, m_radius{radius}
+               float radius,
+               float mass,
+               float coeff_restitution) :
+    m_position{postion}, m_velocity{velocity}, m_accel{accel}, m_radius{radius}, m_mass{mass}, m_coeff_restitution{coeff_restitution}
 {
 }
 
@@ -52,7 +54,11 @@ void Sphere::setAcceleration(phys::Vector acc)
 
 phys::Vector Sphere::getDragForce()
 {
-    return m_drag_force;
+    float density = 1;
+
+
+
+    return drag_force;
 }
 
 float Sphere::getCoeffRestitution()
@@ -68,4 +74,9 @@ void Sphere::setCoeffRestitution(float value)
 float Sphere::getMass()
 {
     return m_mass;
+}
+
+float Sphere::getArea()
+{
+    return m_area;
 }
