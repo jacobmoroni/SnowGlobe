@@ -10,6 +10,7 @@ namespace phys {
         float getX() const;
         float getY() const;
         float getZ() const;
+        Vector sign();
         Vector operator+ (Vector rhs);
         Vector operator- (Vector rhs);
         Vector operator* (Vector rhs);

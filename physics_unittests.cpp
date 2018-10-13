@@ -31,6 +31,17 @@ TEST(GivenSingleVector, whenInvertingVector_OutputIsCorrect)
     EXPECT_EQ(golden_vector,-vec1);
 }
 
+TEST(GivenSingleVector, whenAskingForSign_SignIsCorrect)
+{
+    phys::Vector vec1{-1,2,-3};
+    phys::Vector vec2{1,-2,0};
+    phys::Vector golden_vec1{-1,1,-1};
+    phys::Vector golden_vec2{1,-1,0};
+
+    EXPECT_EQ(golden_vec1,vec1.sign());
+    EXPECT_EQ(golden_vec2,vec2.sign());
+}
+
 TEST(Given2Vectors,whenAdding2Vectors_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
@@ -110,6 +121,7 @@ TEST(Given0InitialState, whenTimeStepOccurs_StateIsCorrect)
     phys::Vector golden_velocity_1_time_step{0.0,0.0,0.0};
     phys::Vector golden_position_1_time_step{0.0,0.0,0.0};
     phys::Physics physics;
+    physics.setGravity(phys::Vector{0,0,0});
     physics.updatePosition(sphere);
 
     EXPECT_TRUE(expectNear(velocity, golden_velocity_1_time_step, 0.001));
@@ -117,54 +129,59 @@ TEST(Given0InitialState, whenTimeStepOccurs_StateIsCorrect)
     delete sphere;
 }
 
-//TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
-//{
-//    phys::Vector velocity{7.0,0,0};
-//    phys::Vector accel{0,0,-9.8};
-//    phys::Vector position{0,0,0};
-//    float radius{1.0};
-//    float mass{1.0};
-//    float coeff_restitution{0.8};
-//    Sphere *sphere = new Sphere(position,velocity,accel,radius,mass,coeff_restitution);
-//    phys::Vector golden_velocity_1_time_step{7.0,0.0,-0.326667};
-//    phys::Vector golden_position_1_time_step{0.23333,0.0,-0.0108889};
-//    phys::Physics physics;
-//    physics.updatePosition(sphere);
-
-//    EXPECT_TRUE(expectNear(sphere->getVelocity(), golden_velocity_1_time_step, 0.001));
-//    EXPECT_TRUE(expectNear(sphere->getPosition(), golden_position_1_time_step, 0.001));
-//    delete sphere;
-//}
-
-//TEST(givenInitaialState, after2TimeSteps_StateIsCorrect)
-//{
-//    phys::Vector velocity{7.0,0,0};
-//    phys::Vector accel{0,0,-9.8};
-//    phys::Vector position{0,0,0};
-//    float radius{0.1};
-//    float mass{1.0};
-//    float coeff_restitution{0.8};
-//    Sphere *sphere = new Sphere(position,velocity,accel,radius,mass,coeff_restitution);
-//    phys::Vector golden_velocity_1_time_step{7.0,0.0,-.653334};
-//    phys::Vector golden_position_1_time_step{0.46667,0.0,-0.032667};
-//    phys::Physics physics;
-//    physics.updatePosition(sphere);
-//    physics.updatePosition(sphere);
-
-//    EXPECT_TRUE(expectNear(sphere->getVelocity(),golden_velocity_1_time_step, 0.001));
-//    EXPECT_TRUE(expectNear(sphere->getPosition(), golden_position_1_time_step, 0.0001));
-//    delete sphere;
-//}
-
-TEST(givenCollidingPosition, whenCollisionIsChecked_ReturnsCollision)
+TEST(GivenInitialState, whenTimeStepOccurs_StateIsCorrect)
 {
-    const int none{0};
-    const int x_wall_pos{1};
-    const int y_wall_pos{2};
-    const int z_wall_pos{3};
-    const int x_wall_neg{4};
-    const int y_wall_neg{5};
-    const int z_wall_neg{6};
+    phys::Vector velocity{7.0,0,0};
+    phys::Vector accel{0,0,-9.8};
+    phys::Vector position{0,0,0};
+    float radius{1.5};
+    float mass{1.5};
+    float coeff_restitution{0.8};
+    float coeff_drag{0.2};
+    Sphere *sphere = new Sphere(position,velocity,accel,radius,mass,coeff_restitution);
+    sphere->setCoeffDrag(coeff_drag);
+    phys::Vector golden_velocity_1_time_step{6.50932,0.0,-0.326667};
+    phys::Vector golden_position_1_time_step{0.216977,0.0,-0.0108889};
+    phys::Physics physics;
+    physics.updatePosition(sphere);
+    physics.setGravity(phys::Vector{0,0,-9.8});
+
+    EXPECT_TRUE(expectNear(sphere->getVelocity(), golden_velocity_1_time_step, 0.00001));
+    EXPECT_TRUE(expectNear(sphere->getPosition(), golden_position_1_time_step, 0.00001));
+    delete sphere;
+}
+
+TEST(givenInitaialState, after2TimeSteps_StateIsCorrect)
+{
+    phys::Vector velocity{7.0,0,0};
+    phys::Vector accel{0,0,-9.8};
+    phys::Vector position{0,0,0};
+    float radius{0.1};
+    float mass{1.0};
+    float coeff_restitution{0.8};
+    float coeff_drag{0.2};
+    Sphere *sphere = new Sphere(position,velocity,accel,radius,mass,coeff_restitution);
+    sphere->setCoeffDrag(coeff_drag);
+    phys::Vector golden_velocity_1_time_step{6.993461,0.0,-0.653326};
+    phys::Vector golden_position_1_time_step{0.466339,0.0,-0.032666};
+    phys::Physics physics;
+    physics.setGravity(phys::Vector{0,0,-9.8});
+    physics.updatePosition(sphere);
+    physics.updatePosition(sphere);
+
+    EXPECT_TRUE(expectNear(sphere->getVelocity(),golden_velocity_1_time_step, 0.00001));
+    EXPECT_TRUE(expectNear(sphere->getPosition(), golden_position_1_time_step, 0.00001));
+    delete sphere;
+}
+
+TEST(givenSingleCollidingPosition, whenCollisionIsChecked_ReturnsCollision)
+{
+    const unsigned char x_wall_pos = 1 << 0;
+    const unsigned char x_wall_neg = 1 << 1;
+    const unsigned char y_wall_pos = 1 << 2;
+    const unsigned char y_wall_neg = 1 << 3;
+    const unsigned char z_wall_pos = 1 << 4;
+    const unsigned char z_wall_neg = 1 << 5;
 
     phys::Vector position_x_neg{-5,0,0};
     phys::Vector position_x_pos{5,0,0};
@@ -184,6 +201,30 @@ TEST(givenCollidingPosition, whenCollisionIsChecked_ReturnsCollision)
     EXPECT_EQ(y_wall_pos,physics.checkForCollission(position_y_pos, box_top_right, box_bottom_left, radius));
     EXPECT_EQ(z_wall_neg,physics.checkForCollission(position_z_neg, box_top_right, box_bottom_left, radius));
     EXPECT_EQ(z_wall_pos,physics.checkForCollission(position_z_pos, box_top_right, box_bottom_left, radius));
+}
+
+TEST(givenMultipleCollidingPosition, whenCollisionIsChecked_ReturnsCollision)
+{
+    const unsigned char x_wall_pos = 1 << 0;
+    const unsigned char x_wall_neg = 1 << 1;
+    const unsigned char y_wall_pos = 1 << 2;
+    const unsigned char y_wall_neg = 1 << 3;
+    const unsigned char z_wall_pos = 1 << 4;
+    const unsigned char z_wall_neg = 1 << 5;
+    const unsigned char none = 0;
+
+    phys::Vector position_x_neg_y_pos{-5,5,0};
+    phys::Vector position_x_pos_z_pos{5,0,5};
+    phys::Vector position_x_pos_yz_neg{5,-5,-5};
+
+    float radius{0.5};
+    phys::Vector box_top_right{5,5,5};
+    phys::Vector box_bottom_left{-5,-5,-5};
+    phys::Physics physics;
+
+    EXPECT_EQ((x_wall_neg | y_wall_pos),physics.checkForCollission(position_x_neg_y_pos, box_top_right, box_bottom_left, radius));
+    EXPECT_EQ((x_wall_pos | z_wall_pos),physics.checkForCollission(position_x_pos_z_pos, box_top_right, box_bottom_left, radius));
+    EXPECT_EQ((x_wall_pos | y_wall_neg | z_wall_neg),physics.checkForCollission(position_x_pos_yz_neg, box_top_right, box_bottom_left, radius));
 }
 
 TEST(givenNonCollidingPosition, whenCollisionIsChecked_ReturnsNoCollision)

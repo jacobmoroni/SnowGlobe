@@ -25,6 +25,8 @@ protected:
     QAction* createGenerateAction();
     QAction* createWorldAction();
     void createToolbar();
+    float forceMax(float max, float min);
+
 public slots:
     void on_actionExit_triggered();
     void startSimulation();
@@ -35,7 +37,7 @@ public slots:
 
 private:
     Ui::MainWindowForm *m_main_window_ui;
-
+    bool m_timer_running{true};
 };
 
 #endif // MAINWINDOW_H

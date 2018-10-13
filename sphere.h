@@ -23,19 +23,22 @@ public:
     void setAcceleration(phys::Vector acc);
 
     phys::Vector getDragForce();
+    void setDragForce(phys::Vector drag_force);
 
     float getCoeffRestitution();
     void setCoeffRestitution(float value);
 
     float getMass();
     float getArea();
+    float getCoeffDrag();
+    void setCoeffDrag(float value);
 
 private:
     float m_radius{1};
     phys::Vector m_position;
     phys::Vector m_velocity;
     phys::Vector m_accel;
-//    phys::Vector m_drag_force;
+    phys::Vector m_drag_force;
     float m_mass{1};
     float m_coeff_restitution{0.8};
     float m_coeff_drag{0.3};

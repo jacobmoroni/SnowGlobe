@@ -24,6 +24,15 @@ namespace phys {
         return this->m_z;
     }
 
+    Vector Vector::sign()
+    {
+        float x{(this->getX() > 0.f) ? 1.f : ((this->getX() < 0.f) ? -1.f : 0.f)};
+        float y{(this->getY() > 0.f) ? 1.f : ((this->getY() < 0.f) ? -1.f : 0.f)};
+        float z{(this->getZ() > 0.f) ? 1.f : ((this->getZ() < 0.f) ? -1.f : 0.f)};
+
+        return Vector{x,y,z};
+    }
+
     Vector Vector::operator +(Vector rhs)
     {
         return Vector{this->m_x + rhs.m_x, this->m_y + rhs.m_y, this->m_z + rhs.m_z};

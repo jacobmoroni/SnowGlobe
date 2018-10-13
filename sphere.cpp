@@ -19,7 +19,7 @@ float Sphere::getRadius()
 
 void Sphere::setRadius(float value)
 {
-    m_radius = value;
+    this->m_radius = value;
 }
 
 phys::Vector Sphere::getPosition()
@@ -29,7 +29,7 @@ phys::Vector Sphere::getPosition()
 
 void Sphere::setPosition(phys::Vector pos)
 {
-    m_position.setVector(pos);
+    this->m_position.setVector(pos);
 }
 
 phys::Vector Sphere::getVelocity()
@@ -39,7 +39,7 @@ phys::Vector Sphere::getVelocity()
 
 void Sphere::setVelocity(phys::Vector vel)
 {
-    m_velocity.setVector(vel);
+    this->m_velocity.setVector(vel);
 }
 
 phys::Vector Sphere::getAcceleration()
@@ -49,16 +49,17 @@ phys::Vector Sphere::getAcceleration()
 
 void Sphere::setAcceleration(phys::Vector acc)
 {
-    m_accel.setVector(acc);
+    this->m_accel.setVector(acc);
 }
 
 phys::Vector Sphere::getDragForce()
 {
-    float density = 1;
+    return m_drag_force;
+}
 
-
-
-    return drag_force;
+void Sphere::setDragForce(phys::Vector drag_force)
+{
+    this->m_drag_force.setVector(drag_force);
 }
 
 float Sphere::getCoeffRestitution()
@@ -69,6 +70,16 @@ float Sphere::getCoeffRestitution()
 void Sphere::setCoeffRestitution(float value)
 {
     m_coeff_restitution = value;
+}
+
+float Sphere::getCoeffDrag()
+{
+    return m_coeff_drag;
+}
+
+void Sphere::setCoeffDrag(float value)
+{
+    this->m_coeff_drag = value;
 }
 
 float Sphere::getMass()

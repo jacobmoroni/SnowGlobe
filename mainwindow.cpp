@@ -97,17 +97,29 @@ QAction* MainWindow::createWorldAction()
 
 void MainWindow::startSimulation()
 {
-    m_main_window_ui->osg_widget->startMyTimer();
+    if (this->m_timer_running==false)
+        m_main_window_ui->osg_widget->startMyTimer();
+        this->m_timer_running = true;
 }
 
 void MainWindow::pauseSimulation()
 {
-    m_main_window_ui->osg_widget->stopMyTimer();
+    if (this->m_timer_running==true)
+        m_main_window_ui->osg_widget->stopMyTimer();
+        this->m_timer_running = false;
 }
 
 void MainWindow::restartSimulation()
 {
-    m_main_window_ui->osg_widget->startMyTimer();
+    m_main_window_ui->osg_widget->restartSimulation();
+}
+
+float MainWindow::forceMax(float max, float min)
+{
+    if (min > max)
+        return min;
+    else
+        return max;
 }
 
 void MainWindow::generateSpheres()
@@ -118,10 +130,13 @@ void MainWindow::generateSpheres()
         int num_spheres = sphere_gen->getNumSpheres();
         float rad_max{sphere_gen->getRadiusMax()};
         float rad_min{sphere_gen->getRadiusMin()};
+        rad_max = forceMax(rad_max, rad_min);
         float mass_max{sphere_gen->getMassMax()};
         float mass_min{sphere_gen->getMassMin()};
+        mass_max = forceMax(mass_max, mass_min);
         float cr_max{sphere_gen->getCoeffOfRestitutionMax()};
         float cr_min{sphere_gen->getCoeffOfRestitutionMin()};
+        cr_max = forceMax(cr_max, cr_min);
         m_main_window_ui->osg_widget->generateNewSpheres(num_spheres,rad_max,rad_min,mass_max,mass_min,cr_max,cr_min);
     }
 }
@@ -131,7 +146,7 @@ void MainWindow::worldSettings()
     WorldSettings* settings = new WorldSettings(this);
     if(settings->exec()==QDialog::Accepted)
     {
-        phys::Vector gravity = settings->getGravity();
+        phys::Vector gravity{settings->getGravity()};
         float density{settings->getDensity()};
         m_main_window_ui->osg_widget->setWorldSettings(gravity,density);
     }

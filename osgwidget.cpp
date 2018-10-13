@@ -41,7 +41,6 @@ void OSGWidget::stopMyTimer()
 
 float OSGWidget::randomFloat(float min, float max)
 {
-//    assert(max > min);
     float random = (rand()/(float)RAND_MAX);
     float range = max - min;
     return (random*range) + min;
@@ -91,6 +90,24 @@ void OSGWidget::generateNewSpheres(int num_spheres, float rad_max, float rad_min
     }
 }
 
+void OSGWidget::restartSimulation()
+{
+    float max_vel{6};
+    for (Sphere *sphere: m_spheres)
+    {
+        float radius{sphere->getRadius()};
+        float pos_x{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+        float pos_y{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+        float pos_z{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+
+        float vel_x{randomFloat(-max_vel,max_vel)};
+        float vel_y{randomFloat(-max_vel,max_vel)};
+        float vel_z{randomFloat(-max_vel,max_vel)};
+        sphere->setPosition(phys::Vector{pos_x,pos_y,pos_z});
+        sphere->setVelocity(phys::Vector{vel_x,vel_y,vel_z});
+    }
+}
+
 void OSGWidget::setupWorld()
 {
     osg::Vec4 box_color_rgba(0.f,0.f,0.f,1.f);
@@ -133,7 +150,6 @@ void OSGWidget::timerEvent(QTimerEvent *event)
     for (Sphere* sphere: m_spheres)
     {
         phys_obj.updatePosition(sphere);
-//        sphere->setAcceleration(phys_obj.getGravity());
         phys_obj.bounceOffWallWhenCollisionDetected(sphere,
                                                     phys::Vector{m_box_size,m_box_size,m_box_size},
                                                     phys::Vector{-m_box_size,-m_box_size,-m_box_size});

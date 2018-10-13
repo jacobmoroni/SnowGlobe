@@ -10,7 +10,7 @@ namespace phys {
     public:
         Physics();
         void updatePosition(Sphere *sphere);
-        int checkForCollission(Vector position,
+        unsigned char checkForCollission(Vector position,
                                Vector box_top_right,
                                Vector box_bottom_left,
                                float radius);
@@ -24,6 +24,7 @@ namespace phys {
     protected:
         void updateAcceleration(Sphere *sphere);
         void updateVelocity(Sphere *sphere);
+        void updateDragForce(Sphere *sphere);
         float m_dt{1/30.0};
         Vector m_gravity{0,0,-9.8};
         float m_density{1.275};
