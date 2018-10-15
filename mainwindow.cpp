@@ -127,7 +127,7 @@ void MainWindow::generateSpheres()
    SphereGenerator* sphere_gen = new SphereGenerator(this);
     if(sphere_gen->exec()==QDialog::Accepted)
     {
-        SphereGenValues* sphere_gen_val = new SphereGenValues;
+        SphereGenSettings* sphere_gen_val = new SphereGenSettings;
         sphere_gen_val->num_spheres = sphere_gen->getNumSpheres();
 
         float rad_max{sphere_gen->getRadiusMax()};
@@ -151,7 +151,7 @@ void MainWindow::generateSpheres()
         sphere_gen_val->vel_min = vel_min;
 
         m_main_window_ui->osg_widget->generateNewSpheres(sphere_gen_val);
-        delete sphere_gen_val;
+//        delete sphere_gen_val;
     }
 }
 

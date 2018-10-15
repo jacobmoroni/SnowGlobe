@@ -56,6 +56,20 @@ TEST(GivenSingleVector,whenComputingL2Norm_NormIsCorrect)
     EXPECT_NEAR(golden_norm_3,vec3.norm(),0.0001);
 }
 
+TEST(GivenSingleVector, whenAdjustingNorm_NewNormIsCorrect)
+{
+    float vec_scalar{10};
+    float vec_x{1};
+    float vec_y{.5};
+    float vec_z{-1.3};
+    phys::Vector vec{vec_x,vec_y,vec_z};
+    phys::Vector new_vec = (vec/vec.norm())*vec_scalar;
+    float golden_norm{1.71464};
+    float golden_new_norm{10};
+    EXPECT_NEAR(golden_norm, vec.norm(),0.00001);
+    EXPECT_NEAR(golden_new_norm,new_vec.norm(),0.000001);
+}
+
 TEST(Given2Vectors,whenAdding2Vectors_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};

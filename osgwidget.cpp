@@ -43,25 +43,26 @@ float OSGWidget::randomFloat(float min, float max)
     return (random*range) + min;
 }
 
-void OSGWidget::generateNewSpheres(SphereGenValues* sphere_gen_vals)
+void OSGWidget::generateNewSpheres(SphereGenSettings* sphere_gen_vals)
 {
+    m_sphere_settings = sphere_gen_vals;
     srand (time(NULL));
-    for (int i=0;i<sphere_gen_vals->num_spheres;i++)
+    for (int i=0;i<m_sphere_settings->num_spheres;i++)
     {
-        float radius{randomFloat(sphere_gen_vals->rad_min, sphere_gen_vals->rad_max)};
-        float mass{randomFloat(sphere_gen_vals->mass_min, sphere_gen_vals->mass_max)};
-        float coeff_restitution{randomFloat(sphere_gen_vals->cr_min, sphere_gen_vals->cr_max)};
+        float radius{randomFloat(m_sphere_settings->rad_min, m_sphere_settings->rad_max)};
+        float mass{randomFloat(m_sphere_settings->mass_min, m_sphere_settings->mass_max)};
+        float coeff_restitution{randomFloat(m_sphere_settings->cr_min, m_sphere_settings->cr_max)};
 
         float pos_x{randomFloat((-m_box_size+radius),(m_box_size-radius))};
         float pos_y{randomFloat((-m_box_size+radius),(m_box_size-radius))};
         float pos_z{randomFloat((-m_box_size+radius),(m_box_size-radius))};
 
-        float vel_scalar{randomFloat(sphere_gen_vals->vel_min, sphere_gen_vals->vel_max)};
+        float vel_scalar{randomFloat(m_sphere_settings->vel_min, m_sphere_settings->vel_max)};
         float vel_x{randomFloat(-1,1)};
         float vel_y{randomFloat(-1,1)};
         float vel_z{randomFloat(-1,1)};
         phys::Vector vel{vel_x,vel_y,vel_z};
-        vel = (vel*vel.norm())*vel_scalar;
+        vel = (vel/vel.norm())*vel_scalar;
 
         float color_r{randomFloat(0,1)};
         float color_g{randomFloat(0,1)};
@@ -90,11 +91,17 @@ void OSGWidget::restartSimulation()
         float pos_y{randomFloat((-m_box_size+radius),(m_box_size-radius))};
         float pos_z{randomFloat((-m_box_size+radius),(m_box_size-radius))};
 
-        float vel_x{randomFloat(-max_vel,max_vel)};
-        float vel_y{randomFloat(-max_vel,max_vel)};
-        float vel_z{randomFloat(-max_vel,max_vel)};
+        float vel_scalar{randomFloat(this->m_sphere_settings->vel_min, this->m_sphere_settings->vel_max)};
+        float vel_x{randomFloat(-1,1)};
+        float vel_y{randomFloat(-1,1)};
+        float vel_z{randomFloat(-1,1)};
+        phys::Vector vel{vel_x,vel_y,vel_z};
+        vel = (vel/vel.norm())*vel_scalar;
+//        float vel_x{randomFloat(-max_vel,max_vel)};
+//        float vel_y{randomFloat(-max_vel,max_vel)};
+//        float vel_z{randomFloat(-max_vel,max_vel)};
         sphere->setPosition(phys::Vector{pos_x,pos_y,pos_z});
-        sphere->setVelocity(phys::Vector{vel_x,vel_y,vel_z});
+        sphere->setVelocity(vel);
     }
 }
 
@@ -119,16 +126,18 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
                                                             this->height()}},
     m_viewer{new osgViewer::CompositeViewer},
     m_root{new osg::Group},
-    m_view{new osgViewer::View}
+    m_view{new osgViewer::View},
+    m_sphere_settings{new SphereGenSettings}
 {
     this->setFocusPolicy(Qt::StrongFocus);
-    unsigned int min_width{800};
-    unsigned int min_height{300};
-    this->setMinimumSize(min_width, min_height);
+//    unsigned int min_width{800};
+//    unsigned int min_height{300};
+//    this->setMinimumSize(min_width, min_height);
     this->setMouseTracking(true);
     this->setupMViewer();
     this->setupWorld();
     this->startMyTimer();
+    srand(unsigned(time(nullptr)));
 }
 
 OSGWidget::~OSGWidget()

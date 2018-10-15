@@ -34,7 +34,7 @@ private:
     Ui::SphereGenerator *ui;
 };
 
-struct SphereGenValues
+struct SphereGenSettings
 {
 public:
     int num_spheres{10};

@@ -26,7 +26,7 @@ public:
     void startMyTimer();
     void stopMyTimer();
     void setWorldSettings(phys::Vector gravity, double density);
-    void generateNewSpheres(SphereGenValues* sphere_gen_vals);
+    void generateNewSpheres(SphereGenSettings* sphere_gen_vals);
     void restartSimulation();
 
 protected:
@@ -78,7 +78,7 @@ private:
     phys::Physics phys_obj;
     std::vector<Sphere*> m_spheres;
     float m_box_size{5};
-
+    SphereGenSettings *m_sphere_settings;
 };
 
 #endif
