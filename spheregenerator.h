@@ -23,6 +23,8 @@ public:
     float getMassMin();
     float getCoeffOfRestitutionMax();
     float getCoeffOfRestitutionMin();
+    float getVelMax();
+    float getVelMin();
 
 private slots:
     void on_buttonBox_accepted();
@@ -31,5 +33,20 @@ private slots:
 private:
     Ui::SphereGenerator *ui;
 };
+
+struct SphereGenValues
+{
+public:
+    int num_spheres{10};
+    float rad_max{1};
+    float rad_min{.2};
+    float mass_max{10};
+    float mass_min{2};
+    float cr_max{.2};
+    float cr_min{1};
+    float vel_max{6};
+    float vel_min{0};
+};
+
 
 #endif // SPHEREGENERATOR_H

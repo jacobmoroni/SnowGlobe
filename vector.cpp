@@ -1,4 +1,5 @@
 #include "vector.h"
+#include <math.h>
 
 namespace phys {
 
@@ -101,6 +102,11 @@ namespace phys {
         else
             z=this->getZ();
         return Vector{x,y,z};
+    }
+
+    float Vector::norm()
+    {
+        return float{(float)sqrt((this->m_x*this->m_x)+(this->m_y*this->m_y)+(this->m_z*this->m_z))};
     }
 
     void Vector::setVector(Vector vec)

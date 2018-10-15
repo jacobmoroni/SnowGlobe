@@ -30,6 +30,7 @@ public:
 
     float getMass();
     float getArea();
+
     float getCoeffDrag();
     void setCoeffDrag(float value);
 

@@ -127,17 +127,31 @@ void MainWindow::generateSpheres()
    SphereGenerator* sphere_gen = new SphereGenerator(this);
     if(sphere_gen->exec()==QDialog::Accepted)
     {
-        int num_spheres = sphere_gen->getNumSpheres();
+        SphereGenValues* sphere_gen_val = new SphereGenValues;
+        sphere_gen_val->num_spheres = sphere_gen->getNumSpheres();
+
         float rad_max{sphere_gen->getRadiusMax()};
         float rad_min{sphere_gen->getRadiusMin()};
-        rad_max = forceMax(rad_max, rad_min);
+        sphere_gen_val->rad_max = forceMax(rad_max, rad_min);
+        sphere_gen_val->rad_min = rad_min;
+
         float mass_max{sphere_gen->getMassMax()};
         float mass_min{sphere_gen->getMassMin()};
-        mass_max = forceMax(mass_max, mass_min);
+        sphere_gen_val->mass_max = forceMax(mass_max, mass_min);
+        sphere_gen_val->mass_min = mass_min;
+
         float cr_max{sphere_gen->getCoeffOfRestitutionMax()};
         float cr_min{sphere_gen->getCoeffOfRestitutionMin()};
-        cr_max = forceMax(cr_max, cr_min);
-        m_main_window_ui->osg_widget->generateNewSpheres(num_spheres,rad_max,rad_min,mass_max,mass_min,cr_max,cr_min);
+        sphere_gen_val->cr_max = forceMax(cr_max, cr_min);
+        sphere_gen_val->cr_min = cr_min;
+
+        float vel_max{sphere_gen->getVelMax()};
+        float vel_min{sphere_gen->getVelMin()};
+        sphere_gen_val->vel_max = forceMax(vel_max,vel_min);
+        sphere_gen_val->vel_min = vel_min;
+
+        m_main_window_ui->osg_widget->generateNewSpheres(sphere_gen_val);
+        delete sphere_gen_val;
     }
 }
 

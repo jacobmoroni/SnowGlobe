@@ -42,6 +42,20 @@ TEST(GivenSingleVector, whenAskingForSign_SignIsCorrect)
     EXPECT_EQ(golden_vec2,vec2.sign());
 }
 
+TEST(GivenSingleVector,whenComputingL2Norm_NormIsCorrect)
+{
+    phys::Vector vec1{1,0,0};
+    phys::Vector vec2{1,1,1};
+    phys::Vector vec3{2,-1,3};
+    float golden_norm_1{1};
+    float golden_norm_2{1.73205};
+    float golden_norm_3{3.74166};
+
+    EXPECT_EQ(golden_norm_1,vec1.norm());
+    EXPECT_NEAR(golden_norm_2,vec2.norm(),0.0001);
+    EXPECT_NEAR(golden_norm_3,vec3.norm(),0.0001);
+}
+
 TEST(Given2Vectors,whenAdding2Vectors_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
@@ -315,4 +329,5 @@ TEST(givenOneSphere, whenComputingRadius_RadiusIsCorrect)
     double golden_area(0.5*3.14159*3*3);
 
     EXPECT_NEAR(golden_area, sphere->getArea(),0.001);
+    delete sphere;
 }

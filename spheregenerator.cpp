@@ -49,6 +49,16 @@ float SphereGenerator::getCoeffOfRestitutionMin()
     return (float) ui->cr_min->value();
 }
 
+float SphereGenerator::getVelMax()
+{
+    return (float) ui->vel_max->value();
+}
+
+float SphereGenerator::getVelMin()
+{
+    return (float) ui->vel_min->value();
+}
+
 void SphereGenerator::on_buttonBox_accepted()
 {
     QDialog::accept();

@@ -21,6 +21,7 @@ namespace phys {
         Vector operator- ();
         bool operator== (const Vector rhs) const;
         Vector abs();
+        float norm();
         void setVector(Vector vec);
 
     private:

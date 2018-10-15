@@ -17,9 +17,6 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QWheelEvent>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
 #include "physics.h"
 #include "vector.h"
@@ -46,23 +43,25 @@ float OSGWidget::randomFloat(float min, float max)
     return (random*range) + min;
 }
 
-void OSGWidget::generateNewSpheres(int num_spheres, float rad_max, float rad_min, float mass_max, float mass_min, float cr_max, float cr_min)
+void OSGWidget::generateNewSpheres(SphereGenValues* sphere_gen_vals)
 {
     srand (time(NULL));
-    float max_vel{6.0};
-    for (int i=0;i<num_spheres;i++)
+    for (int i=0;i<sphere_gen_vals->num_spheres;i++)
     {
-        float radius{randomFloat(rad_min, rad_max)};
-        float mass{randomFloat(mass_min, mass_max)};
-        float coeff_restitution{randomFloat(cr_min, cr_max)};
+        float radius{randomFloat(sphere_gen_vals->rad_min, sphere_gen_vals->rad_max)};
+        float mass{randomFloat(sphere_gen_vals->mass_min, sphere_gen_vals->mass_max)};
+        float coeff_restitution{randomFloat(sphere_gen_vals->cr_min, sphere_gen_vals->cr_max)};
 
         float pos_x{randomFloat((-m_box_size+radius),(m_box_size-radius))};
         float pos_y{randomFloat((-m_box_size+radius),(m_box_size-radius))};
         float pos_z{randomFloat((-m_box_size+radius),(m_box_size-radius))};
 
-        float vel_x{randomFloat(-max_vel,max_vel)};
-        float vel_y{randomFloat(-max_vel,max_vel)};
-        float vel_z{randomFloat(-max_vel,max_vel)};
+        float vel_scalar{randomFloat(sphere_gen_vals->vel_min, sphere_gen_vals->vel_max)};
+        float vel_x{randomFloat(-1,1)};
+        float vel_y{randomFloat(-1,1)};
+        float vel_z{randomFloat(-1,1)};
+        phys::Vector vel{vel_x,vel_y,vel_z};
+        vel = (vel*vel.norm())*vel_scalar;
 
         float color_r{randomFloat(0,1)};
         float color_g{randomFloat(0,1)};
@@ -72,19 +71,10 @@ void OSGWidget::generateNewSpheres(int num_spheres, float rad_max, float rad_min
         osg::Vec3 center_of_sphere_xyz{0,0,0};
         osg::Vec4 sphere_color_rgba{color_r, color_g, color_b, color_a};
         phys::Vector position{pos_x, pos_y, pos_z};
-        phys::Vector velocity{vel_x, vel_y, vel_z};
         phys::Vector accel = phys_obj.getGravity();
-        Sphere* new_sphere = new Sphere(position,
-                                        velocity,
-                                        accel,
-                                        radius,
-                                        mass,
-                                        coeff_restitution);
+        Sphere* new_sphere = new Sphere(position, vel, accel, radius, mass, coeff_restitution);
 
-        osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz,
-                                            radius,
-                                            sphere_color_rgba,
-                                            new_sphere)};
+        osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz, radius, sphere_color_rgba, new_sphere)};
         m_root->addChild(sphere);
         m_spheres.push_back(new_sphere);
     }
@@ -414,8 +404,8 @@ osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color, float box_size)
     geode->getOrCreateStateSet()->setMode( GL_DEPTH_TEST, osg::StateAttribute::ON );
     osg::PositionAttitudeTransform* transform = new osg::PositionAttitudeTransform;
 
-//    osg::Vec3d scaleFactor(2.0,2.0,2.0);
-//    transform->setScale(scaleFactor);
+    osg::Vec3d scaleFactor(1.0,1.0,1.0);
+    transform->setScale(scaleFactor);
 
     transform->addChild(geode);
     return transform;
@@ -427,10 +417,7 @@ void OSGWidget::setUpMView()
     float field_of_view{45.0};
     float min_viewable_range{1.0};
     float max_viewable_range{1000.0};
-    osg::Camera* camera{this->setUpCamera(background_color_rgba,
-                                          field_of_view,
-                                          min_viewable_range,
-                                          max_viewable_range)};
+    osg::Camera* camera{this->setUpCamera(background_color_rgba, field_of_view, min_viewable_range, max_viewable_range)};
 
     osg::Vec3d camera_location_xyz{0.0, -20.0, 3.0};
     osg::Vec3d camera_center_of_focus_xyz{0.0, 0.0, 0.0};

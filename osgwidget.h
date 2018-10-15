@@ -12,6 +12,7 @@
 #include "vector.h"
 #include "physics.h"
 #include "sphere.h"
+#include "spheregenerator.h"
 
 class OSGWidget : public QOpenGLWidget
 {
@@ -25,7 +26,7 @@ public:
     void startMyTimer();
     void stopMyTimer();
     void setWorldSettings(phys::Vector gravity, double density);
-    void generateNewSpheres(int num_spheres,float rad_max, float rad_min, float mass_max, float mass_min, float cr_max, float cr_min);
+    void generateNewSpheres(SphereGenValues* sphere_gen_vals);
     void restartSimulation();
 
 protected:
