@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QtCore>
+#include "spheregenerator.h"
 
 class OutputWindow;
 
@@ -21,7 +22,9 @@ public:
 protected:
     QAction* createStartAction();
     QAction* createPauseAction();
+    QAction* createHomeAction();
     QAction* createRestartAction();
+    QAction* createClearAction();
     QAction* createGenerateAction();
     QAction* createWorldAction();
     void createToolbar();
@@ -31,13 +34,16 @@ public slots:
     void on_actionExit_triggered();
     void startSimulation();
     void pauseSimulation();
+    void homeSimulation();
     void restartSimulation();
+    void clearSimulation();
     void generateSpheres();
     void worldSettings();
 
 private:
     Ui::MainWindowForm *m_main_window_ui;
     bool m_timer_running{true};
+    SphereGenSettings* m_sphere_settings;
 };
 
 #endif // MAINWINDOW_H

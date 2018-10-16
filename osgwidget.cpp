@@ -36,38 +36,37 @@ void OSGWidget::stopMyTimer()
     killTimer(m_timer_id);
 }
 
-float OSGWidget::randomFloat(float min, float max)
+double OSGWidget::randomDouble(double min, double max)
 {
-    float random = (rand()/(float)RAND_MAX);
-    float range = max - min;
+    double random = (rand()/(double)RAND_MAX);
+    double range = max - min;
     return (random*range) + min;
 }
 
 void OSGWidget::generateNewSpheres(SphereGenSettings* sphere_gen_vals)
 {
     m_sphere_settings = sphere_gen_vals;
-    srand (time(NULL));
     for (int i=0;i<m_sphere_settings->num_spheres;i++)
     {
-        float radius{randomFloat(m_sphere_settings->rad_min, m_sphere_settings->rad_max)};
-        float mass{randomFloat(m_sphere_settings->mass_min, m_sphere_settings->mass_max)};
-        float coeff_restitution{randomFloat(m_sphere_settings->cr_min, m_sphere_settings->cr_max)};
+        double radius{randomDouble(m_sphere_settings->rad_min, m_sphere_settings->rad_max)};
+        double mass{randomDouble(m_sphere_settings->mass_min, m_sphere_settings->mass_max)};
+        double coeff_restitution{randomDouble(m_sphere_settings->cr_min, m_sphere_settings->cr_max)};
 
-        float pos_x{randomFloat((-m_box_size+radius),(m_box_size-radius))};
-        float pos_y{randomFloat((-m_box_size+radius),(m_box_size-radius))};
-        float pos_z{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+        double pos_x{randomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_y{randomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_z{randomDouble((-m_box_size+radius),(m_box_size-radius))};
 
-        float vel_scalar{randomFloat(m_sphere_settings->vel_min, m_sphere_settings->vel_max)};
-        float vel_x{randomFloat(-1,1)};
-        float vel_y{randomFloat(-1,1)};
-        float vel_z{randomFloat(-1,1)};
+        double vel_scalar{randomDouble(m_sphere_settings->vel_min, m_sphere_settings->vel_max)};
+        double vel_x{randomDouble(-1,1)};
+        double vel_y{randomDouble(-1,1)};
+        double vel_z{randomDouble(-1,1)};
         phys::Vector vel{vel_x,vel_y,vel_z};
         vel = (vel/vel.norm())*vel_scalar;
 
-        float color_r{randomFloat(0,1)};
-        float color_g{randomFloat(0,1)};
-        float color_b{randomFloat(0,1)};
-        float color_a{randomFloat(0,1)};
+        double color_r{randomDouble(0,1)};
+        double color_g{randomDouble(0,1)};
+        double color_b{randomDouble(0,1)};
+        double color_a{randomDouble(0,1)};
 
         osg::Vec3 center_of_sphere_xyz{0,0,0};
         osg::Vec4 sphere_color_rgba{color_r, color_g, color_b, color_a};
@@ -78,31 +77,44 @@ void OSGWidget::generateNewSpheres(SphereGenSettings* sphere_gen_vals)
         osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz, radius, sphere_color_rgba, new_sphere)};
         m_root->addChild(sphere);
         m_spheres.push_back(new_sphere);
+        m_sphere_geodes.push_back(sphere);
     }
+}
+
+void OSGWidget::clearSimulation()
+{
+        for (Sphere *sphere: m_spheres)
+        {
+           sphere = nullptr;
+           delete sphere;
+        }
+    for (osg::Node *node: m_sphere_geodes)
+        m_root->removeChild(node);
 }
 
 void OSGWidget::restartSimulation()
 {
-    float max_vel{6};
     for (Sphere *sphere: m_spheres)
     {
-        float radius{sphere->getRadius()};
-        float pos_x{randomFloat((-m_box_size+radius),(m_box_size-radius))};
-        float pos_y{randomFloat((-m_box_size+radius),(m_box_size-radius))};
-        float pos_z{randomFloat((-m_box_size+radius),(m_box_size-radius))};
+        double radius{sphere->getRadius()};
+        double pos_x{randomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_y{randomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_z{randomDouble((-m_box_size+radius),(m_box_size-radius))};
 
-        float vel_scalar{randomFloat(this->m_sphere_settings->vel_min, this->m_sphere_settings->vel_max)};
-        float vel_x{randomFloat(-1,1)};
-        float vel_y{randomFloat(-1,1)};
-        float vel_z{randomFloat(-1,1)};
+        double vel_scalar{randomDouble(this->m_sphere_settings->vel_min, this->m_sphere_settings->vel_max)};
+        double vel_x{randomDouble(-1,1)};
+        double vel_y{randomDouble(-1,1)};
+        double vel_z{randomDouble(-1,1)};
         phys::Vector vel{vel_x,vel_y,vel_z};
         vel = (vel/vel.norm())*vel_scalar;
-//        float vel_x{randomFloat(-max_vel,max_vel)};
-//        float vel_y{randomFloat(-max_vel,max_vel)};
-//        float vel_z{randomFloat(-max_vel,max_vel)};
         sphere->setPosition(phys::Vector{pos_x,pos_y,pos_z});
         sphere->setVelocity(vel);
     }
+}
+
+void OSGWidget::homeView()
+{
+    m_view->home();
 }
 
 void OSGWidget::setupWorld()
@@ -130,9 +142,6 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
     m_sphere_settings{new SphereGenSettings}
 {
     this->setFocusPolicy(Qt::StrongFocus);
-//    unsigned int min_width{800};
-//    unsigned int min_height{300};
-//    this->setMinimumSize(min_width, min_height);
     this->setMouseTracking(true);
     this->setupMViewer();
     this->setupWorld();
@@ -282,9 +291,9 @@ void OSGWidget::repaintOsgGraphicsAfterInteraction(QEvent* event)
 }
 
 osg::Camera *OSGWidget::setUpCamera(osg::Vec4 background_color,
-                                    float field_of_view,
-                                    float min_viewable_range,
-                                    float max_viewable_range)
+                                    double field_of_view,
+                                    double min_viewable_range,
+                                    double max_viewable_range)
 {
     osg::Camera *camera{new osg::Camera};
     float aspect_ratio{static_cast<float>(this->width()) / static_cast<float>(this->height())};
@@ -313,7 +322,7 @@ osg::ref_ptr<osgGA::TrackballManipulator> OSGWidget::setUpTrackballManipulator(o
 }
 
 osg::Node *OSGWidget::setUpSphere(osg::Vec3 center_of_sphere_xyz,
-                                  float radius,
+                                  double radius,
                                   osg::Vec4 sphere_color_rgba,
                                   Sphere *sphere)
 {
@@ -329,7 +338,7 @@ osg::Node *OSGWidget::setUpSphere(osg::Vec3 center_of_sphere_xyz,
 }
 
 osg::Geode *OSGWidget::generateSphereGeode(osg::Vec3 center_of_sphere_xyz,
-                                      float radius,
+                                      double radius,
                                       osg::Vec4 sphere_color_rgba)
 {
     osg::Sphere* sphere{new osg::Sphere{center_of_sphere_xyz, radius}};
@@ -377,7 +386,7 @@ unsigned int OSGWidget::getMouseButtonNumber(QMouseEvent* event)
     return button;
 }
 
-osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color, float box_size)
+osg::Node *OSGWidget::createWireframeCube(osg::Vec4 &color, double box_size)
 {
     osg::Vec3Array* v = new osg::Vec3Array;
     v->resize( 8 );

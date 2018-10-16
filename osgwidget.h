@@ -20,7 +20,7 @@ class OSGWidget : public QOpenGLWidget
 
 public:
     OSGWidget(QWidget* parent = 0,
-             Qt::WindowFlags f = 0);
+              Qt::WindowFlags f = 0);
 
     virtual ~OSGWidget();
     void startMyTimer();
@@ -28,6 +28,8 @@ public:
     void setWorldSettings(phys::Vector gravity, double density);
     void generateNewSpheres(SphereGenSettings* sphere_gen_vals);
     void restartSimulation();
+    void clearSimulation();
+    void homeView();
 
 protected:
     void timerEvent(QTimerEvent *event);
@@ -46,26 +48,26 @@ protected:
     void repaintOsgGraphicsAfterInteraction(QEvent* event);
 
     osg::Camera* setUpCamera(osg::Vec4 background_color_rgba,
-                           float field_of_view,
-                           float min_viewable_range,
-                           float max_viewable_range);
+                             double field_of_view,
+                             double min_viewable_range,
+                             double max_viewable_range);
     osg::ref_ptr<osgGA::TrackballManipulator> setUpTrackballManipulator(osg::Vec3d camera_location_xyz,
-                                                                      osg::Vec3d camera_center_of_focus_xyz,
-                                                                      osg::Vec3d world_up_vector_xyz);
+                                                                        osg::Vec3d camera_center_of_focus_xyz,
+                                                                        osg::Vec3d world_up_vector_xyz);
     osg::Node* setUpSphere(osg::Vec3 center_of_sphere_xyz,
-                         float radius,
-                         osg::Vec4 sphere_color_rgba,
-                         Sphere *sphere);
+                           double radius,
+                           osg::Vec4 sphere_color_rgba,
+                           Sphere *sphere);
 
     osg::Geode* generateSphereGeode(osg::Vec3 center_of_sphere_xyz,
-                             float radius,
-                             osg::Vec4 sphere_color_rgba);
+                                    double radius,
+                                    osg::Vec4 sphere_color_rgba);
     unsigned int getMouseButtonNumber(QMouseEvent* event);
-    osg::Node* createWireframeCube(osg::Vec4 &color, float box_size);
+    osg::Node* createWireframeCube(osg::Vec4 &color, double box_size);
     void setUpMView();
     void setupMViewer();
     void setupWorld();
-    float randomFloat(float min, float max);
+    double randomDouble(double min, double max);
 
 private:
     virtual void on_resize(int width, int height);
@@ -77,7 +79,8 @@ private:
     int m_timer_id{0};
     phys::Physics phys_obj;
     std::vector<Sphere*> m_spheres;
-    float m_box_size{5};
+    std::vector<osg::Node*> m_sphere_geodes;
+    double m_box_size{5};
     SphereGenSettings *m_sphere_settings;
 };
 

@@ -17,7 +17,7 @@ public:
     ~WorldSettings();
 
     phys::Vector getGravity();
-    float getDensity();
+    double getDensity();
 
 private slots:
     void on_buttonBox_accepted();

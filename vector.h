@@ -2,33 +2,33 @@
 #define VECTOR_H
 
 namespace phys {
-    class Vector
-    {
-    public:
-        Vector();
-        Vector(float x, float y, float z);
-        float getX() const;
-        float getY() const;
-        float getZ() const;
-        Vector sign();
-        Vector operator+ (Vector rhs);
-        Vector operator- (Vector rhs);
-        Vector operator* (Vector rhs);
-        Vector operator/ (float number);
-        Vector operator* (float number);
-        Vector operator+ (float number);
-        Vector operator- (float number);
-        Vector operator- ();
-        bool operator== (const Vector rhs) const;
-        Vector abs();
-        float norm();
-        void setVector(Vector vec);
+class Vector
+{
+public:
+    Vector();
+    Vector(double x, double y, double z);
+    double getX() const;
+    double getY() const;
+    double getZ() const;
+    Vector sign();
+    Vector operator+ (Vector rhs);
+    Vector operator- (Vector rhs);
+    Vector operator* (Vector rhs);
+    Vector operator/ (double number);
+    Vector operator* (double number);
+    Vector operator+ (double number);
+    Vector operator- (double number);
+    Vector operator- ();
+    bool operator== (const Vector rhs) const;
+    Vector abs();
+    double norm();
+    void setVector(Vector vec);
 
-    private:
-        float m_x{0};
-        float m_y{0};
-        float m_z{0};
-    };
+private:
+    double m_x{0};
+    double m_y{0};
+    double m_z{0};
+};
 }
 
 #endif // VECTOR_H

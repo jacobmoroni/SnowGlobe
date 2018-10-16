@@ -65,6 +65,7 @@ target_link_libraries(${PROJECT_NAME}
 
 add_executable(${TEST_NAME}
     physics_unittests.cpp
+    vector_unittests.cpp
     )
 
 target_link_libraries(${TEST_NAME}
