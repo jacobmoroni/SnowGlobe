@@ -12,17 +12,17 @@ Vector::Vector(double x,double y, double z):
 
 double Vector::getX() const
 {
-    return this->m_x;
+    return m_x;
 }
 
 double Vector::getY() const
 {
-    return this->m_y;
+    return m_y;
 }
 
 double Vector::getZ() const
 {
-    return this->m_z;
+    return m_z;
 }
 
 Vector Vector::sign()
@@ -36,46 +36,46 @@ Vector Vector::sign()
 
 Vector Vector::operator +(Vector rhs)
 {
-    return Vector{this->m_x + rhs.m_x, this->m_y + rhs.m_y, this->m_z + rhs.m_z};
+    return Vector{m_x + rhs.m_x, m_y + rhs.m_y, m_z + rhs.m_z};
 }
 
 Vector Vector::operator -(Vector rhs)
 {
-    return Vector{this->m_x - rhs.m_x, this->m_y - rhs.m_y, this->m_z - rhs.m_z};
+    return Vector{m_x - rhs.m_x, m_y - rhs.m_y, m_z - rhs.m_z};
 }
 
 Vector Vector::operator *(Vector rhs)
 {
-    return Vector{this->m_x*rhs.getX(), this->m_y*rhs.getY(), this->m_z*rhs.getZ()};
+    return Vector{m_x*rhs.getX(), m_y*rhs.getY(), m_z*rhs.getZ()};
 }
 Vector Vector::operator /(double number)
 {
-    return Vector{this->m_x/number,this->m_y/number,this->m_z/number};
+    return Vector{m_x/number,m_y/number,m_z/number};
 }
 
 Vector Vector::operator *(double number)
 {
-    return Vector{this->m_x*number, this->m_y*number, this->m_z*number};
+    return Vector{m_x*number, m_y*number, m_z*number};
 }
 
 Vector Vector::operator +(double number)
 {
-    return Vector{this->m_x+number, this->m_y+number, this->m_z+number};
+    return Vector{m_x+number, m_y+number, m_z+number};
 }
 
 Vector Vector::operator -(double number)
 {
-    return Vector{this->m_x-number, this->m_y-number, this->m_z-number};
+    return Vector{m_x-number, m_y-number, m_z-number};
 }
 
 Vector Vector::operator -()
 {
-    return Vector{-this->m_x,-this->m_y, -this->m_z};
+    return Vector{-m_x,-m_y, -m_z};
 }
 
 bool Vector::operator ==(const Vector rhs) const
 {
-    if (this->m_x == rhs.m_x && this->m_y == rhs.m_y && this->m_z==rhs.m_z)
+    if (m_x == rhs.m_x && m_y == rhs.m_y && m_z==rhs.m_z)
         return true;
     else
         return false;
@@ -87,32 +87,32 @@ Vector Vector::abs()
     double y{0};
     double z{0};
 
-    if (this->getX() < 0.0)
-        x=-this->getX();
+    if (m_x < 0.0)
+        x=-m_x;
     else
-        x=this->getX();
+        x=m_x;
 
-    if (this->getY() < 0.0)
-        y=-this->getY();
+    if (m_y < 0.0)
+        y=-m_y;
     else
-        y=this->getY();
+        y=m_y;
 
-    if (this->getZ() < 0.0)
-        z=-this->getZ();
+    if (m_z < 0.0)
+        z=-m_z;
     else
-        z=this->getZ();
+        z=m_z;
     return Vector{x,y,z};
 }
 
 double Vector::norm()
 {
-    return double{(double)sqrt((this->m_x*this->m_x)+(this->m_y*this->m_y)+(this->m_z*this->m_z))};
+    return double{sqrt((m_x*m_x)+(m_y*m_y)+(m_z*m_z))};
 }
 
 void Vector::setVector(Vector vec)
 {
-    this->m_x = vec.getX();
-    this->m_y = vec.getY();
-    this->m_z = vec.getZ();
+    m_x = vec.getX();
+    m_y = vec.getY();
+    m_z = vec.getZ();
 }
 }

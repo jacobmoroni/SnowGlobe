@@ -108,14 +108,17 @@
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
+       <property name="decimals">
+        <number>3</number>
+       </property>
        <property name="maximum">
-        <double>10.000000000000000</double>
+        <double>50.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.100000000000000</double>
+        <double>1.000000000000000</double>
        </property>
        <property name="value">
-        <double>1.230000000000000</double>
+        <double>1.275000000000000</double>
        </property>
       </widget>
      </item>

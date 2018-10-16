@@ -56,6 +56,14 @@ TEST(GivenSingleVector, whenAdjustingNorm_NewNormIsCorrect)
     EXPECT_NEAR(golden_new_norm,new_vec.norm(),0.000001);
 }
 
+TEST(GivenSingleVector, whenComputingAbs_AbsoluteValueIsCorrect)
+{
+    phys::Vector vec{-1,3,-2};
+    phys::Vector golden_vec{1,3,2};
+
+    EXPECT_EQ(golden_vec,vec.abs());
+}
+
 TEST(Given2Vectors,whenAdding2Vectors_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
@@ -78,7 +86,7 @@ TEST(Given2Vectors, whenSubtracting2Vectors_OutputIsCorrect)
     EXPECT_EQ(golden_vector,vec1-vec2);
 }
 
-TEST(Given2Vectors, whenMultiplying2Vectors_OutputIsCorrect_Test)
+TEST(Given2Vectors, whenMultiplying2Vectors_OutputIsCorrect)
 {
     phys::Vector vec1{1.0,2.0,3.0};
     phys::Vector vec2{2.0,-3.0,4.0};
@@ -89,9 +97,9 @@ TEST(Given2Vectors, whenMultiplying2Vectors_OutputIsCorrect_Test)
 TEST(GivenVectorAndNumber, whenMultiplyingByNumber_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};
-    double number{0.1};
+    double number{2.0};
 
-    phys::Vector golden_vector{0.1,0.2,0.3};
+    phys::Vector golden_vector{2.0,4.0,6.0};
     EXPECT_EQ(golden_vector,vec1*number);
 }
 

@@ -152,7 +152,7 @@ void MainWindow::clearSimulation()
     m_main_window_ui->osg_widget->clearSimulation();
 }
 
-float MainWindow::forceMax(float max, float min)
+double MainWindow::forceMax(double max, double min)
 {
     if (min > max)
         return min;
@@ -167,23 +167,23 @@ void MainWindow::generateSpheres()
     {
         m_sphere_settings->num_spheres = sphere_gen->getNumSpheres();
 
-        float rad_max{sphere_gen->getRadiusMax()};
-        float rad_min{sphere_gen->getRadiusMin()};
+        double rad_max{sphere_gen->getRadiusMax()};
+        double rad_min{sphere_gen->getRadiusMin()};
         m_sphere_settings->rad_max = forceMax(rad_max, rad_min);
         m_sphere_settings->rad_min = rad_min;
 
-        float mass_max{sphere_gen->getMassMax()};
-        float mass_min{sphere_gen->getMassMin()};
+        double mass_max{sphere_gen->getMassMax()};
+        double mass_min{sphere_gen->getMassMin()};
         m_sphere_settings->mass_max = forceMax(mass_max, mass_min);
         m_sphere_settings->mass_min = mass_min;
 
-        float cr_max{sphere_gen->getCoeffOfRestitutionMax()};
-        float cr_min{sphere_gen->getCoeffOfRestitutionMin()};
+        double cr_max{sphere_gen->getCoeffOfRestitutionMax()};
+        double cr_min{sphere_gen->getCoeffOfRestitutionMin()};
         m_sphere_settings->cr_max = forceMax(cr_max, cr_min);
         m_sphere_settings->cr_min = cr_min;
 
-        float vel_max{sphere_gen->getVelMax()};
-        float vel_min{sphere_gen->getVelMin()};
+        double vel_max{sphere_gen->getVelMax()};
+        double vel_min{sphere_gen->getVelMin()};
         m_sphere_settings->vel_max = forceMax(vel_max,vel_min);
         m_sphere_settings->vel_min = vel_min;
 
@@ -197,7 +197,7 @@ void MainWindow::worldSettings()
     if(settings->exec()==QDialog::Accepted)
     {
         phys::Vector gravity{settings->getGravity()};
-        float density{settings->getDensity()};
+        double density{settings->getDensity()};
         m_main_window_ui->osg_widget->setWorldSettings(gravity,density);
     }
 }

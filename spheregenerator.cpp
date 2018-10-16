@@ -19,44 +19,44 @@ int SphereGenerator::getNumSpheres()
     return ui->num_spheres->value();
 }
 
-float SphereGenerator::getRadiusMax()
+double SphereGenerator::getRadiusMax()
 {
-    return (float) ui->radius_max->value();
+    return ui->radius_max->value();
 }
 
-float SphereGenerator::getRadiusMin()
+double SphereGenerator::getRadiusMin()
 {
-    return (float) ui->radius_min->value();
+    return ui->radius_min->value();
 }
 
-float SphereGenerator::getMassMax()
+double SphereGenerator::getMassMax()
 {
-    return (float) ui->mass_max->value();
+    return ui->mass_max->value();
 }
 
-float SphereGenerator::getMassMin()
+double SphereGenerator::getMassMin()
 {
-    return (float) ui->radius_max->value();
+    return ui->radius_max->value();
 }
 
-float SphereGenerator::getCoeffOfRestitutionMax()
+double SphereGenerator::getCoeffOfRestitutionMax()
 {
-    return (float) ui->cr_max->value();
+    return ui->cr_max->value();
 }
 
-float SphereGenerator::getCoeffOfRestitutionMin()
+double SphereGenerator::getCoeffOfRestitutionMin()
 {
-    return (float) ui->cr_min->value();
+    return ui->cr_min->value();
 }
 
-float SphereGenerator::getVelMax()
+double SphereGenerator::getVelMax()
 {
-    return (float) ui->vel_max->value();
+    return ui->vel_max->value();
 }
 
-float SphereGenerator::getVelMin()
+double SphereGenerator::getVelMin()
 {
-    return (float) ui->vel_min->value();
+    return ui->vel_min->value();
 }
 
 void SphereGenerator::on_buttonBox_accepted()
@@ -67,4 +67,60 @@ void SphereGenerator::on_buttonBox_accepted()
 void SphereGenerator::on_buttonBox_rejected()
 {
     QDialog::reject();
+}
+
+void SphereGenerator::on_vel_min_valueChanged(double value)
+{
+    m_settings.vel_min = value;
+    if (m_settings.vel_max <= m_settings.vel_min)
+        ui->vel_max->setValue(m_settings.vel_min);
+}
+
+void SphereGenerator::on_vel_max_valueChanged(double value)
+{
+    m_settings.vel_max = value;
+    if (m_settings.vel_max <= m_settings.vel_min)
+        ui->vel_min->setValue(m_settings.vel_max);
+}
+
+void SphereGenerator::on_cr_min_valueChanged(double value)
+{
+    m_settings.cr_min = value;
+    if (m_settings.cr_max <= m_settings.cr_min)
+        ui->cr_max->setValue(m_settings.cr_min);
+}
+
+void SphereGenerator::on_cr_max_valueChanged(double value)
+{
+    m_settings.cr_max = value;
+    if (m_settings.cr_max <= m_settings.cr_min)
+        ui->cr_min->setValue(m_settings.cr_max);
+}
+
+void SphereGenerator::on_mass_min_valueChanged(double value)
+{
+    m_settings.mass_min = value;
+    if (m_settings.mass_max <= m_settings.mass_min)
+        ui->mass_max->setValue(m_settings.mass_min);
+}
+
+void SphereGenerator::on_mass_max_valueChanged(double value)
+{
+    m_settings.mass_max = value;
+    if (m_settings.mass_max <= m_settings.mass_min)
+        ui->mass_min->setValue(m_settings.mass_max);
+}
+
+void SphereGenerator::on_radius_min_valueChanged(double value)
+{
+    m_settings.rad_min = value;
+    if (m_settings.rad_max <= m_settings.rad_min)
+        ui->radius_max->setValue(m_settings.rad_min);
+}
+
+void SphereGenerator::on_radius_max_valueChanged(double value)
+{
+    m_settings.rad_max = value;
+    if (m_settings.rad_max <= m_settings.rad_min)
+        ui->radius_min->setValue(m_settings.rad_max);
 }

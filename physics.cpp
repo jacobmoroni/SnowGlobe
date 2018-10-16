@@ -32,7 +32,7 @@ void Physics::updateDragForce(Sphere *sphere)
 
 void Physics::bounceOffWallWhenCollisionDetected(Sphere *sphere, Vector box_top_right, Vector box_bottom_left)
 {
-    unsigned char collision_detection{checkForCollission(sphere->getPosition(), box_top_right, box_bottom_left, sphere->getRadius())};
+    unsigned char collision_detection{this->checkForCollission(sphere->getPosition(), box_top_right, box_bottom_left, sphere->getRadius())};
     const unsigned char x_wall_pos = 1 << 0;
     const unsigned char x_wall_neg = 1 << 1;
     const unsigned char y_wall_pos = 1 << 2;

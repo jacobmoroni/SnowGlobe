@@ -16,16 +16,16 @@ WorldSettings::~WorldSettings()
 
 phys::Vector WorldSettings::getGravity()
 {
-    double grav_x = (double) ui->gravity_x->value();
-    double grav_y = (double) ui->gravity_y->value();
-    double grav_z = (double) ui->gravity_z->value();
+    double grav_x = ui->gravity_x->value();
+    double grav_y = ui->gravity_y->value();
+    double grav_z = ui->gravity_z->value();
     phys::Vector gravity{grav_x,grav_y,grav_z};
     return gravity;
 }
 
 double WorldSettings::getDensity()
 {
-    double density = (double) ui->density->value();
+    double density = ui->density->value();
     return density;
 }
 

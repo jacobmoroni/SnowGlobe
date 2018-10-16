@@ -63,10 +63,10 @@ void OSGWidget::generateNewSpheres(SphereGenSettings* sphere_gen_vals)
         phys::Vector vel{vel_x,vel_y,vel_z};
         vel = (vel/vel.norm())*vel_scalar;
 
-        double color_r{randomDouble(0,1)};
-        double color_g{randomDouble(0,1)};
-        double color_b{randomDouble(0,1)};
-        double color_a{randomDouble(0,1)};
+        float color_r{(float)randomDouble(0,1)};
+        float color_g{(float)randomDouble(0,1)};
+        float color_b{(float)randomDouble(0,1)};
+        float color_a{(float)randomDouble(0,1)};
 
         osg::Vec3 center_of_sphere_xyz{0,0,0};
         osg::Vec4 sphere_color_rgba{color_r, color_g, color_b, color_a};
@@ -341,7 +341,7 @@ osg::Geode *OSGWidget::generateSphereGeode(osg::Vec3 center_of_sphere_xyz,
                                       double radius,
                                       osg::Vec4 sphere_color_rgba)
 {
-    osg::Sphere* sphere{new osg::Sphere{center_of_sphere_xyz, radius}};
+    osg::Sphere* sphere{new osg::Sphere{center_of_sphere_xyz, (float)radius}};
     osg::ShapeDrawable* sd{new osg::ShapeDrawable{sphere}};
     sd->setColor(sphere_color_rgba);
     sd->setName("Sphere");

@@ -28,7 +28,7 @@ protected:
     QAction* createGenerateAction();
     QAction* createWorldAction();
     void createToolbar();
-    float forceMax(float max, float min);
+    double forceMax(double max, double min);
 
 public slots:
     void on_actionExit_triggered();

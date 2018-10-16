@@ -30,4 +30,5 @@ protected:
     double m_density{1.275};
 };
 }
+
 #endif // PHYSICS_H

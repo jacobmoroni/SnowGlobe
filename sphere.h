@@ -7,11 +7,11 @@ class Sphere
 {
 public:
     Sphere();
-    Sphere(phys::Vector position, phys::Vector velocity, phys::Vector accel, float radius, float mass, float coeff_restitution);
+    Sphere(phys::Vector position, phys::Vector velocity, phys::Vector accel, double radius, double mass, double coeff_restitution);
 
 
-    float getRadius();
-    void setRadius(float value);
+    double getRadius();
+    void setRadius(double value);
 
     phys::Vector getPosition();
     void setPosition(phys::Vector pos);
@@ -25,26 +25,26 @@ public:
     phys::Vector getDragForce();
     void setDragForce(phys::Vector drag_force);
 
-    float getCoeffRestitution();
-    void setCoeffRestitution(float value);
+    double getCoeffRestitution();
+    void setCoeffRestitution(double value);
 
-    float getMass();
-    float getArea();
+    double getMass();
+    double getArea();
 
-    float getCoeffDrag();
-    void setCoeffDrag(float value);
+    double getCoeffDrag();
+    void setCoeffDrag(double value);
 
 private:
     phys::Vector m_position;
     phys::Vector m_velocity;
     phys::Vector m_accel;
     phys::Vector m_drag_force;
-    float m_radius{1};
-    float m_mass{1};
-    float m_coeff_restitution{0.8};
-    float m_coeff_drag{0.3};
-    float pi{3.14159};
-    float m_area = 0.5*pi*m_radius*m_radius;
+    double m_radius{1};
+    double m_mass{1};
+    double m_coeff_restitution{0.8};
+    double m_coeff_drag{0.3};
+    double pi{3.14159};
+    double m_area = 0.5*pi*m_radius*m_radius;
 };
 
 #endif // SPHERE_H

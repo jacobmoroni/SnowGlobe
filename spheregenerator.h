@@ -4,6 +4,20 @@
 #include <QDialog>
 #include "vector.h"
 
+struct SphereGenSettings
+{
+public:
+    int num_spheres{10};
+    double rad_max{1};
+    double rad_min{.2};
+    double mass_max{10};
+    double mass_min{2};
+    double cr_max{.2};
+    double cr_min{1};
+    double vel_max{6};
+    double vel_min{0};
+};
+
 namespace Ui {
 class SphereGenerator;
 }
@@ -17,36 +31,29 @@ public:
     ~SphereGenerator();
 
     int getNumSpheres();
-    float getRadiusMax();
-    float getRadiusMin();
-    float getMassMax();
-    float getMassMin();
-    float getCoeffOfRestitutionMax();
-    float getCoeffOfRestitutionMin();
-    float getVelMax();
-    float getVelMin();
+    double getRadiusMax();
+    double getRadiusMin();
+    double getMassMax();
+    double getMassMin();
+    double getCoeffOfRestitutionMax();
+    double getCoeffOfRestitutionMin();
+    double getVelMax();
+    double getVelMin();
 
 private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-
+    void on_vel_min_valueChanged(double value);
+    void on_vel_max_valueChanged(double value);
+    void on_cr_min_valueChanged(double value);
+    void on_cr_max_valueChanged(double value);
+    void on_mass_min_valueChanged(double value);
+    void on_mass_max_valueChanged(double value);
+    void on_radius_min_valueChanged(double value);
+    void on_radius_max_valueChanged(double value);
 private:
     Ui::SphereGenerator *ui;
+    SphereGenSettings m_settings;
 };
-
-struct SphereGenSettings
-{
-public:
-    int num_spheres{10};
-    float rad_max{1};
-    float rad_min{.2};
-    float mass_max{10};
-    float mass_min{2};
-    float cr_max{.2};
-    float cr_min{1};
-    float vel_max{6};
-    float vel_min{0};
-};
-
 
 #endif // SPHEREGENERATOR_H
