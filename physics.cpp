@@ -1,5 +1,6 @@
 #include "physics.h"
 #include "vector.h"
+#include <iostream>
 #include "sphere.h"
 
 namespace phys {
@@ -137,7 +138,21 @@ double Physics::getDensity()
 
 void Physics::bounceOffSphere(Sphere *sphere1, Sphere *sphere2)
 {
-    phys::Vector new_vel1{sphere1->getCoeffRestitution()*(sphere1->getVelocity()-(2*sphere2->getMass()/(sphere1->getMass()+sphere2->getMass()))*)}
-    sphere1->setVelocity();
+    double mass1_term{2*sphere2->getMass()/(sphere1->getMass()+sphere2->getMass())};
+    phys::Vector vel1_diff{sphere1->getVelocity()-sphere2->getVelocity()};
+    phys::Vector pos1_diff{sphere1->getPosition()-sphere2->getPosition()};
+    double vel1_diff_dotted{vel1_diff.dot(pos1_diff)};
+    double pos1_norm_squared{pos1_diff.norm()*pos1_diff.norm()};
+    phys::Vector new_vel1{sphere1->getCoeffRestitution()*(sphere1->getVelocity()-mass1_term*vel1_diff_dotted/pos1_norm_squared*pos1_diff)};
+    sphere1->setVelocity(new_vel1);
+
+    double mass2_term{2*sphere1->getMass()/(sphere1->getMass()+sphere2->getMass())};
+    phys::Vector vel2_diff{sphere2->getVelocity()-sphere1->getVelocity()};
+    phys::Vector pos2_diff{sphere2->getPosition()-sphere1->getPosition()};
+    double vel2_diff_dotted{vel2_diff.dot(pos2_diff)};
+    double pos2_norm_squared{pos2_diff.norm()*pos2_diff.norm()};
+    phys::Vector new_vel2{sphere2->getCoeffRestitution()*(sphere2->getVelocity()-mass2_term*vel2_diff_dotted/pos2_norm_squared*pos2_diff)};
+    std::cout<<mass2_term<<" "<<vel2_diff.getZ()<<" "<<pos2_diff.getZ()<<" "<<vel1_diff_dotted<<" "<<pos2_norm_squared<<new_vel2.getZ();
+    sphere2->setVelocity(new_vel2);
 }
 }

@@ -10,7 +10,7 @@ void SphereUpdateCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
     osg::PositionAttitudeTransform *pat = dynamic_cast<osg::PositionAttitudeTransform *> (node);
     phys::Vector pos{m_sphere->getPosition()};
 
-    pat->setPosition(osg::Vec3{pos.getX(),pos.getY(),pos.getZ()});
+    pat->setPosition(osg::Vec3{(float)pos.getX(),(float)pos.getY(),(float)pos.getZ()});
 
     traverse(node, nv);
 }

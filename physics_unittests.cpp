@@ -256,13 +256,13 @@ public:
     double coeff_restitution{0.8};
 
     phys::Vector position1{0,0,5};
-    phys::Vector velocity1{-7,-7,-7};
-    phys::Vector accel1{0,0,-9.8};
+    phys::Vector velocity1{7,7,7};
+    phys::Vector accel1{0,0,0};
     Sphere *sphere1 = new Sphere(position1,velocity1,accel1,radius,mass,coeff_restitution);
 
     phys::Vector position2{0,0,3.5};
-    phys::Vector velocity2{7,7,7};
-    phys::Vector accel2{0,0,-9.8};
+    phys::Vector velocity2{-7,-7,-7};
+    phys::Vector accel2{0,0,0};
     Sphere *sphere2 = new Sphere(position2,velocity2,accel2,radius,mass,coeff_restitution);
 
     phys::Vector position3{0,0,3.5};
@@ -275,8 +275,13 @@ public:
 
 TEST_F(VectorOfSpheres, whenCheckingVelocityOfSpheresAfterImpact_VelocityIsCorrect)
 {
-    phys::Vector pos{7,7,7};
-    EXPECT_EQ(pos,sphere2->getVelocity());
+    phys::Vector golden_velocity1_after_collision{5.6, 5.6, -5.6};
+    phys::Vector golden_velocity2_after_collision{-5.6, -5.6, 5.6};
+    bounceOffSphere(sphere1, sphere2);
+    std::cout<<sphere2->getVelocity().getX()<<" "<<sphere2->getVelocity().getY()<<" "<<sphere2->getVelocity().getZ()<<std::endl;
+    EXPECT_TRUE(expectNear(golden_velocity1_after_collision,sphere1->getVelocity(),0.0001));
+    EXPECT_TRUE(expectNear(golden_velocity2_after_collision,sphere2->getVelocity(),0.0001));
+
 }
 
 TEST_F(VectorOfSpheres,whenCollisionIsChecked_CollisionIsDetectedForCollidingSpheres)

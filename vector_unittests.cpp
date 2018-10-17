@@ -94,6 +94,16 @@ TEST(Given2Vectors, whenMultiplying2Vectors_OutputIsCorrect)
 
     EXPECT_EQ(golden_vector,(vec1*vec2));
 }
+
+TEST(Given2Vectors, whenComputingDotProduct_OutputIsCorrect)
+{
+    phys::Vector vec1{1.0,2.0,3.0};
+    phys::Vector vec2{2.0,-3.0,4.0};
+    double golden_value{8.0};
+
+    EXPECT_EQ(golden_value,(vec1.dot(vec2)));
+}
+
 TEST(GivenVectorAndNumber, whenMultiplyingByNumber_OutputIsCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};

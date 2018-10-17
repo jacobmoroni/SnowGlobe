@@ -109,10 +109,30 @@ double Vector::norm()
     return double{sqrt((m_x*m_x)+(m_y*m_y)+(m_z*m_z))};
 }
 
+double Vector::dot(Vector rhs)
+{
+    return double{m_x*rhs.getX()+m_y*rhs.getY()+m_z*rhs.getZ()};
+}
+
 void Vector::setVector(Vector vec)
 {
     m_x = vec.getX();
     m_y = vec.getY();
     m_z = vec.getZ();
+}
+
+Vector operator +(double lhs, Vector rhs)
+{
+    return Vector{rhs + lhs};
+}
+
+Vector operator *(double lhs, Vector rhs)
+{
+    return Vector{rhs * lhs};
+}
+
+Vector operator -(double lhs, Vector rhs)
+{
+    return Vector{-rhs + lhs};
 }
 }
