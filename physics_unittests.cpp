@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "vector.h"
+#include <vector>
 #include "physics.h"
 
 bool expectNear(phys::Vector vec1, phys::Vector vec2, double threshold)
@@ -243,4 +244,43 @@ TEST(givenOneSphere, whenComputingArea_AreaIsCorrect)
 
     EXPECT_NEAR(golden_area, sphere->getArea(),0.001);
     delete sphere;
+}
+
+class VectorOfSpheres : public phys::Physics, public ::testing::Test
+{
+public:
+    VectorOfSpheres(){}
+
+    double radius{1};
+    double mass{1.0};
+    double coeff_restitution{0.8};
+
+    phys::Vector position1{0,0,5};
+    phys::Vector velocity1{-7,-7,-7};
+    phys::Vector accel1{0,0,-9.8};
+    Sphere *sphere1 = new Sphere(position1,velocity1,accel1,radius,mass,coeff_restitution);
+
+    phys::Vector position2{0,0,3.5};
+    phys::Vector velocity2{7,7,7};
+    phys::Vector accel2{0,0,-9.8};
+    Sphere *sphere2 = new Sphere(position2,velocity2,accel2,radius,mass,coeff_restitution);
+
+    phys::Vector position3{0,0,3.5};
+    phys::Vector velocity3{7,7,7};
+    phys::Vector accel3{0,0,-9.8};
+    Sphere *sphere3 = new Sphere(position3,velocity3,accel3,radius,mass,coeff_restitution);
+
+    std::vector<Sphere*> spheres{sphere1, sphere2, sphere3};
+};
+
+TEST_F(VectorOfSpheres, whenCheckingVelocityOfSpheresAfterImpact_VelocityIsCorrect)
+{
+    phys::Vector pos{7,7,7};
+    EXPECT_EQ(pos,sphere2->getVelocity());
+}
+
+TEST_F(VectorOfSpheres,whenCollisionIsChecked_CollisionIsDetectedForCollidingSpheres)
+{
+//    phys::Vector
+    EXPECT_EQ(1,1);
 }

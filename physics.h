@@ -21,6 +21,8 @@ public:
     Vector getGravity();
     void setDensity(double density);
     double getDensity();
+
+    void bounceOffSphere(Sphere *sphere1, Sphere *sphere2);
 protected:    
     void updateAcceleration(Sphere *sphere);
     void updateVelocity(Sphere *sphere);

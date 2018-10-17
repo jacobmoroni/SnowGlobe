@@ -134,4 +134,10 @@ double Physics::getDensity()
 {
     return m_density;
 }
+
+void Physics::bounceOffSphere(Sphere *sphere1, Sphere *sphere2)
+{
+    phys::Vector new_vel1{sphere1->getCoeffRestitution()*(sphere1->getVelocity()-(2*sphere2->getMass()/(sphere1->getMass()+sphere2->getMass()))*)}
+    sphere1->setVelocity();
+}
 }
