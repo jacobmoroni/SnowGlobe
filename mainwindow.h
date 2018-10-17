@@ -43,7 +43,7 @@ public slots:
 private:
     Ui::MainWindowForm *m_main_window_ui;
     bool m_timer_running{true};
-    SphereGenSettings* m_sphere_settings;
+    SphereGenSettings m_sphere_settings;
 };
 
 #endif // MAINWINDOW_H

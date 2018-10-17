@@ -43,20 +43,20 @@ double OSGWidget::randomDouble(double min, double max)
     return (random*range) + min;
 }
 
-void OSGWidget::generateNewSpheres(SphereGenSettings* sphere_gen_vals)
+void OSGWidget::generateNewSpheres(SphereGenSettings sphere_gen_vals)
 {
     m_sphere_settings = sphere_gen_vals;
-    for (int i=0;i<m_sphere_settings->num_spheres;i++)
+    for (int i=0;i<m_sphere_settings.num_spheres;i++)
     {
-        double radius{randomDouble(m_sphere_settings->rad_min, m_sphere_settings->rad_max)};
-        double mass{randomDouble(m_sphere_settings->mass_min, m_sphere_settings->mass_max)};
-        double coeff_restitution{randomDouble(m_sphere_settings->cr_min, m_sphere_settings->cr_max)};
+        double radius{randomDouble(m_sphere_settings.rad_min, m_sphere_settings.rad_max)};
+        double mass{randomDouble(m_sphere_settings.mass_min, m_sphere_settings.mass_max)};
+        double coeff_restitution{randomDouble(m_sphere_settings.cr_min, m_sphere_settings.cr_max)};
 
         double pos_x{randomDouble((-m_box_size+radius),(m_box_size-radius))};
         double pos_y{randomDouble((-m_box_size+radius),(m_box_size-radius))};
         double pos_z{randomDouble((-m_box_size+radius),(m_box_size-radius))};
 
-        double vel_scalar{randomDouble(m_sphere_settings->vel_min, m_sphere_settings->vel_max)};
+        double vel_scalar{randomDouble(m_sphere_settings.vel_min, m_sphere_settings.vel_max)};
         double vel_x{randomDouble(-1,1)};
         double vel_y{randomDouble(-1,1)};
         double vel_z{randomDouble(-1,1)};
@@ -101,7 +101,7 @@ void OSGWidget::restartSimulation()
         double pos_y{randomDouble((-m_box_size+radius),(m_box_size-radius))};
         double pos_z{randomDouble((-m_box_size+radius),(m_box_size-radius))};
 
-        double vel_scalar{randomDouble(this->m_sphere_settings->vel_min, this->m_sphere_settings->vel_max)};
+        double vel_scalar{randomDouble(this->m_sphere_settings.vel_min, this->m_sphere_settings.vel_max)};
         double vel_x{randomDouble(-1,1)};
         double vel_y{randomDouble(-1,1)};
         double vel_z{randomDouble(-1,1)};
@@ -138,8 +138,7 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
                                                             this->height()}},
     m_viewer{new osgViewer::CompositeViewer},
     m_root{new osg::Group},
-    m_view{new osgViewer::View},
-    m_sphere_settings{new SphereGenSettings}
+    m_view{new osgViewer::View}
 {
     this->setFocusPolicy(Qt::StrongFocus);
     this->setMouseTracking(true);
@@ -151,6 +150,7 @@ OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
 
 OSGWidget::~OSGWidget()
 {
+    clearSimulation();
 }
 
 void OSGWidget::timerEvent(QTimerEvent *event)
