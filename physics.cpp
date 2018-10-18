@@ -1,6 +1,7 @@
 #include "physics.h"
 #include "vector.h"
 #include <iostream>
+#include <algorithm>
 #include "sphere.h"
 
 namespace phys {
@@ -138,7 +139,6 @@ double Physics::getDensity()
 
 void Physics::checkForSphereCollision(std::vector<Sphere *> &spheres)
 {
-    std::cout<<spheres.size()<<std::endl;
     for (int i=0; i<spheres.size(); i++)
     {
         for (int j=i+1; j<spheres.size(); j++)
@@ -183,5 +183,9 @@ void Physics::adjustPositionAfterBounce(Sphere *sphere1, Sphere *sphere2)
     sphere1->setPosition(new_pos1);
     sphere2->setPosition(new_pos2);
 }
+}
 
+double saturateNumber(double value, double min_val, double max_val)
+{
+    return double(std::max(std::min(max_val, value),min_val));
 }

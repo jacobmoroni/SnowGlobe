@@ -16,6 +16,19 @@ bool expectNear(phys::Vector vec1, phys::Vector vec2, double threshold)
         return false;
 }
 
+TEST(GivenNumberAndSaturationValues, whenNumberIsSaturated_SaturatedValuesAreCorrect)
+{
+    double num1{100};
+    double num2{5};
+    double num3{30};
+    double min_value{10};
+    double max_value{90};
+
+    EXPECT_EQ(max_value, saturateNumber(num1,min_value,max_value));
+    EXPECT_EQ(min_value, saturateNumber(num2,min_value,max_value));
+    EXPECT_EQ(num3, saturateNumber(num3,min_value,max_value));
+}
+
 TEST(Given0InitialState, whenTimeStepOccurs_StateIsCorrect)
 {
     phys::Vector velocity{0,0,0};

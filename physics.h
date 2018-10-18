@@ -35,5 +35,5 @@ protected:
     double m_collision_buffer{0.01};
 };
 }
-
+double saturateNumber(double value, double min_val, double max_val);
 #endif // PHYSICS_H
