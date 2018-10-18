@@ -22,7 +22,7 @@ public:
     Vector getGravity();
     void setDensity(double density);
     double getDensity();
-    void checkForSphereCollision(std::vector<Sphere*> spheres);
+    void checkForSphereCollision(std::vector<Sphere *> &spheres);
     void bounceOffSphere(Sphere *sphere1, Sphere *sphere2);
     void adjustPositionAfterBounce(Sphere *sphere1, Sphere *sphere2);
 protected:    

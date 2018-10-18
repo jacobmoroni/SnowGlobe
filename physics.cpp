@@ -136,8 +136,9 @@ double Physics::getDensity()
     return m_density;
 }
 
-void Physics::checkForSphereCollision(std::vector<Sphere *> spheres)
+void Physics::checkForSphereCollision(std::vector<Sphere *> &spheres)
 {
+    std::cout<<spheres.size()<<std::endl;
     for (int i=0; i<spheres.size(); i++)
     {
         for (int j=i+1; j<spheres.size(); j++)

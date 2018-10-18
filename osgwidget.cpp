@@ -88,6 +88,7 @@ void OSGWidget::clearSimulation()
         {
            sphere = nullptr;
            delete sphere;
+           m_spheres.pop_back();
         }
     for (osg::Node *node: m_sphere_geodes)
         m_root->removeChild(node);
