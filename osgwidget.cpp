@@ -72,6 +72,7 @@ void OSGWidget::generateNewSpheres(SphereGenSettings sphere_gen_vals)
         osg::Vec4 sphere_color_rgba{color_r, color_g, color_b, color_a};
         phys::Vector position{pos_x, pos_y, pos_z};
         phys::Vector accel = phys_obj.getGravity();
+
         Sphere* new_sphere = new Sphere(position, vel, accel, radius, mass, coeff_restitution);
 
         osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz, radius, sphere_color_rgba, new_sphere)};
@@ -155,6 +156,7 @@ OSGWidget::~OSGWidget()
 
 void OSGWidget::timerEvent(QTimerEvent *event)
 {
+    phys_obj.checkForSphereCollision(m_spheres);
     for (Sphere* sphere: m_spheres)
     {
         phys_obj.updatePosition(sphere);
