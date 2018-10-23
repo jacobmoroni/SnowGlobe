@@ -13,11 +13,6 @@ public:
     void updatePosition(Sphere *sphere);
     unsigned char checkForBoxCollission(Vector position, Vector box_top_right, Vector box_bottom_left, double radius);
     void bounceOffWall(Sphere *sphere, Vector box_top_right, Vector box_bottom_left);
-
-//    void checkForBoxCollission(Sphere *sphere,
-//                               Vector box_top_right,
-//                               Vector box_bottom_left);
-//    void bounceOffWall(Sphere *sphere, Vector wall, Vector overshoot);
     void setGravity(Vector gravity);
     Vector getGravity();
     void setDensity(double density);

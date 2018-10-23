@@ -1,4 +1,3 @@
-#include <iostream>
 #include "physics.h"
 #include "vector.h"
 #include "sphere.h"
@@ -31,62 +30,6 @@ void Physics::updateDragForce(Sphere *sphere)
     force = force.saturate(-m_max_drag_force,m_max_drag_force);
     sphere->setDragForce(force);
 }
-
-//void Physics::bounceOffWall(Sphere *sphere, Vector wall, Vector overshoot)
-//{
-//    sphere->setVelocity(sphere->getVelocity()*wall);
-//    sphere->setPosition(sphere->getPosition()+overshoot);
-//}
-
-//void Physics::checkForBoxCollission(Sphere* sphere, Vector box_top_right, Vector box_bottom_left)
-//{
-//    Vector x_wall{-1,0,0};
-//    Vector y_wall{0,-1,0};
-//    Vector z_wall{0,0,-1};
-//    Vector overshoot{0,0,0};
-//    bool collision{false};
-
-//    if (sphere->getPosition().getX()+sphere->getRadius() >= box_top_right.getX())
-//    {
-//        overshoot = {box_top_right.getX()-(sphere->getPosition().getX()+sphere->getRadius()),0,0};
-//        bounceOffWall(sphere, x_wall, overshoot);
-//        collision = true;
-//    }
-//    if (sphere->getPosition().getX()-sphere->getRadius() <= box_bottom_left.getX())
-//    {
-//        overshoot = {box_bottom_left.getX()-(sphere->getPosition().getX()-sphere->getRadius()),0,0};
-//        bounceOffWall(sphere, x_wall, overshoot);
-//        collision = true;
-//    }
-//    if (sphere->getPosition().getY()+sphere->getRadius() >= box_top_right.getY())
-//    {
-//        overshoot = {0,box_top_right.getY()-(sphere->getPosition().getY()+sphere->getRadius()),0};
-//        bounceOffWall(sphere, y_wall, overshoot);
-//        collision = true;
-//    }
-//    if (sphere->getPosition().getY()-sphere->getRadius() <= box_bottom_left.getY())
-//    {
-//        overshoot = {0,box_bottom_left.getY()-(sphere->getPosition().getY()-sphere->getRadius()),0};
-//        bounceOffWall(sphere, y_wall, overshoot);
-//        collision = true;
-//    }
-//    if (sphere->getPosition().getZ()+sphere->getRadius() >= box_top_right.getZ())
-//    {
-//        overshoot = {0,0,box_top_right.getZ()-(sphere->getPosition().getZ()+sphere->getRadius())};
-//        bounceOffWall(sphere, z_wall, overshoot);
-//        collision = true;
-//    }
-//    if (sphere->getPosition().getZ()-sphere->getRadius() <= box_bottom_left.getZ())
-//    {
-//        overshoot = {0,0,box_bottom_left.getZ()-(sphere->getPosition().getZ()-sphere->getRadius())};
-//        bounceOffWall(sphere, z_wall, overshoot);
-//        collision = true;
-//    }
-//    if (collision == true)
-//    {
-//        sphere->setVelocity(sphere->getVelocity()*sphere->getCoeffRestitution());
-//    }
-//}
 
 void Physics::bounceOffWall(Sphere *sphere, Vector box_top_right, Vector box_bottom_left)
 {
