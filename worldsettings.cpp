@@ -29,6 +29,11 @@ double WorldSettings::getDensity()
     return density;
 }
 
+bool WorldSettings::getAutogravity()
+{
+    return m_autogravity;
+}
+
 void WorldSettings::on_buttonBox_accepted()
 {
     QDialog::accept();
@@ -37,4 +42,22 @@ void WorldSettings::on_buttonBox_accepted()
 void WorldSettings::on_buttonBox_rejected()
 {
     QDialog::reject();
+}
+
+void WorldSettings::on_checkBox_clicked(bool checked)
+{
+    if (checked == true)
+    {
+        m_autogravity = true;
+        ui->gravity_x->setDisabled(true);
+        ui->gravity_y->setDisabled(true);
+        ui->gravity_z->setDisabled(true);
+    }
+    else
+    {
+        m_autogravity = false;
+        ui->gravity_x->setEnabled(true);
+        ui->gravity_y->setEnabled(true);
+        ui->gravity_z->setEnabled(true);
+    }
 }

@@ -185,7 +185,7 @@ TEST(givenCollidingPosition, whenXCollisionIsFound_XVelocityReverses)
     phys::Vector box_bottom_left{-5,-5,-5};
     phys::Physics physics;
     physics.bounceOffWall(sphere,box_top_right,box_bottom_left);
-    phys::Vector golden_velocity{-5.6,5.6,5.6};
+    phys::Vector golden_velocity{-5.6,7,7};
 
     EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
     delete sphere;
@@ -205,7 +205,7 @@ TEST(givenCollidingPosition, whenYCollisionIsFound_YVelocityReverses)
     phys::Vector box_bottom_left{-5,-5,-5};
     phys::Physics physics;
     physics.bounceOffWall(sphere,box_top_right,box_bottom_left);
-    phys::Vector golden_velocity{5.6,-5.6,5.6};
+    phys::Vector golden_velocity{7,-5.6,7};
 
     EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
     delete sphere;
@@ -225,7 +225,7 @@ TEST(givenCollidingPosition, whenZCollisionIsFound_ZVelocityReverses)
     phys::Vector box_bottom_left{-5,-5,-5};
     phys::Physics physics;
     physics.bounceOffWall(sphere,box_top_right,box_bottom_left);
-    phys::Vector golden_velocity{5.6,5.6,-5.6};
+    phys::Vector golden_velocity{7,7,-5.6};
 
     EXPECT_TRUE(expectNear(golden_velocity,sphere->getVelocity(),0.001));
     delete sphere;
@@ -289,8 +289,8 @@ public:
 
 TEST_F(VectorOfSpheres, whenCheckingVelocityOfSpheresAfterSimpleImpact_VelocityIsCorrect)
 {
-    phys::Vector golden_velocity1_after_collision{5.6, 5.6, -5.6};
-    phys::Vector golden_velocity2_after_collision{-5.6, -5.6, 5.6};
+    phys::Vector golden_velocity1_after_collision{7, 7, -4.2};
+    phys::Vector golden_velocity2_after_collision{-7, -7, 4.2};
     bounceOffSphere(sphere1, sphere2);
     EXPECT_TRUE(expectNear(golden_velocity1_after_collision,sphere1->getVelocity(),0.0001));
     EXPECT_TRUE(expectNear(golden_velocity2_after_collision,sphere2->getVelocity(),0.0001));
@@ -298,8 +298,8 @@ TEST_F(VectorOfSpheres, whenCheckingVelocityOfSpheresAfterSimpleImpact_VelocityI
 
 TEST_F(VectorOfSpheres, whenCheckingVelocityOfSpheresAfterComplexImpact_VelocityIsCorrect)
 {
-    phys::Vector golden_velocity4_after_collision{-0.23, 1.67, 0.58};
-    phys::Vector golden_velocity5_after_collision{0.2622222222, 0.7377777778, -1.477777778};
+    phys::Vector golden_velocity4_after_collision{-0.44, 2.04, 0.46};
+    phys::Vector golden_velocity5_after_collision{4.2622222222, 0.7377777778, -4.437777778};
     bounceOffSphere(sphere4, sphere5);
     EXPECT_TRUE(expectNear(golden_velocity4_after_collision,sphere4->getVelocity(),0.0001));
     EXPECT_TRUE(expectNear(golden_velocity5_after_collision,sphere5->getVelocity(),0.0001));
@@ -307,11 +307,11 @@ TEST_F(VectorOfSpheres, whenCheckingVelocityOfSpheresAfterComplexImpact_Velocity
 
 TEST_F(VectorOfSpheres,whenCollisionIsChecked_CollisionIsDetectedForCollidingSpheres)
 {
-    phys::Vector golden_vel1{5.6, 5.6, -5.6};
-    phys::Vector golden_vel2{-5.6, -5.6, 5.6};
+    phys::Vector golden_vel1{7, 7, -4.2};
+    phys::Vector golden_vel2{-7, -7, 4.2};
     phys::Vector golden_vel3{7,7,7};
-    phys::Vector golden_vel4{-0.23, 1.67, 0.58};
-    phys::Vector golden_vel5{0.2622222222, 0.7377777778, -1.477777778};
+    phys::Vector golden_vel4{-0.44, 2.04, 0.46};
+    phys::Vector golden_vel5{4.2622222222, 0.7377777778, -4.437777778};
     checkForSphereCollision(spheres);
 
     EXPECT_TRUE(expectNear(golden_vel1,sphere1->getVelocity(),0.0001));

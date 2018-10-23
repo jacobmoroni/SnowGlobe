@@ -49,41 +49,41 @@ void Physics::bounceOffWall(Sphere *sphere, Vector box_top_right, Vector box_bot
         if (collision_detection & x_wall_pos)
         {
             overshoot = box_top_right.getX()-(sphere->getPosition().getX()+sphere->getRadius());
-            bounce = bounce*Vector{-1,1,1};
+            bounce = bounce*Vector{-sphere->getCoeffRestitution(),1,1};
             sphere->setPosition(Vector{sphere->getPosition().getX()+overshoot,sphere->getPosition().getY(),sphere->getPosition().getZ()});
         }
         if (collision_detection & y_wall_pos)
         {
             overshoot = box_top_right.getY()-(sphere->getPosition().getY()+sphere->getRadius());
-            bounce = bounce*Vector{1,-1,1};
+            bounce = bounce*Vector{1,-sphere->getCoeffRestitution(),1};
             sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY()+overshoot,sphere->getPosition().getZ()});
         }
         if (collision_detection & z_wall_pos)
         {
             overshoot = box_top_right.getZ()-(sphere->getPosition().getZ()+sphere->getRadius());
-            bounce = bounce*Vector{1,1,-1};
+            bounce = bounce*Vector{1,1,-sphere->getCoeffRestitution()};
             sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY(),sphere->getPosition().getZ()+overshoot});
         }
         if (collision_detection & x_wall_neg)
         {
             overshoot = box_bottom_left.getX()-(sphere->getPosition().getX()-sphere->getRadius());
-            bounce = bounce*Vector{-1,1,1};
+            bounce = bounce*Vector{-sphere->getCoeffRestitution(),1,1};
             sphere->setPosition(Vector{sphere->getPosition().getX()+overshoot,sphere->getPosition().getY(),sphere->getPosition().getZ()});
         }
         if (collision_detection & y_wall_neg)
         {
             overshoot = box_bottom_left.getY()-(sphere->getPosition().getY()-sphere->getRadius());
-            bounce = bounce*Vector{1,-1,1};
+            bounce = bounce*Vector{1,-sphere->getCoeffRestitution(),1};
             sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY()+overshoot,sphere->getPosition().getZ()});
         }
         if (collision_detection & z_wall_neg)
         {
             overshoot = box_bottom_left.getZ()-(sphere->getPosition().getZ()-sphere->getRadius());
-            bounce = bounce*Vector{1,1,-1};
+            bounce = bounce*Vector{1,1,-sphere->getCoeffRestitution()};
             sphere->setPosition(Vector{sphere->getPosition().getX(),sphere->getPosition().getY(),sphere->getPosition().getZ()+overshoot});
         }
         Vector new_vel{sphere->getVelocity()};
-        new_vel = (new_vel*bounce)*sphere->getCoeffRestitution();
+        new_vel = new_vel*bounce;
         sphere->setVelocity(new_vel);
     }
 
@@ -155,18 +155,24 @@ void Physics::checkForSphereCollision(std::vector<Sphere *> &spheres)
 void Physics::bounceOffSphere(Sphere *sphere1, Sphere *sphere2)
 {
     double mass1_term{2*sphere2->getMass()/(sphere1->getMass()+sphere2->getMass())};
-    phys::Vector vel1_diff{sphere1->getVelocity()-sphere2->getVelocity()};
-    phys::Vector pos1_diff{sphere1->getPosition()-sphere2->getPosition()};
+    Vector vel1_diff{sphere1->getVelocity()-sphere2->getVelocity()};
+    Vector pos1_diff{sphere1->getPosition()-sphere2->getPosition()};
     double vel1_diff_dotted{vel1_diff.dot(pos1_diff)};
     double pos1_norm_squared{pos1_diff.norm()*pos1_diff.norm()};
-    phys::Vector new_vel1{sphere1->getCoeffRestitution()*(sphere1->getVelocity()-mass1_term*vel1_diff_dotted/pos1_norm_squared*pos1_diff)};
+    Vector new_vel1{sphere1->getVelocity()-(sphere1->getCoeffRestitution()*mass1_term*vel1_diff_dotted/pos1_norm_squared*pos1_diff)};
 
     double mass2_term{2*sphere1->getMass()/(sphere1->getMass()+sphere2->getMass())};
-    phys::Vector vel2_diff{sphere2->getVelocity()-sphere1->getVelocity()};
-    phys::Vector pos2_diff{sphere2->getPosition()-sphere1->getPosition()};
+    Vector vel2_diff{sphere2->getVelocity()-sphere1->getVelocity()};
+    Vector pos2_diff{sphere2->getPosition()-sphere1->getPosition()};
     double vel2_diff_dotted{vel2_diff.dot(pos2_diff)};
     double pos2_norm_squared{pos2_diff.norm()*pos2_diff.norm()};
-    phys::Vector new_vel2{sphere2->getCoeffRestitution()*(sphere2->getVelocity()-mass2_term*vel2_diff_dotted/pos2_norm_squared*pos2_diff)};
+    Vector new_vel2{sphere2->getVelocity()-(sphere2->getCoeffRestitution()*mass2_term*vel2_diff_dotted/pos2_norm_squared*pos2_diff)};
+//    Vector m1{(sphere1->getMass()*sphere1->getVelocity())};
+//    Vector m2{(sphere2->getMass()*sphere2->getVelocity())};
+//    double crm1{sphere2->getMass()*sphere1->getCoeffRestitution()};
+//    Vector new_vel1{(m1+m2+crm1*(vel2_diff))/(sphere1->getMass()+sphere2->getMass())};
+//    double crm2{sphere1->getMass()*sphere2->getCoeffRestitution()};
+//    Vector new_vel2{(m1+m2+crm2*(vel1_diff))/(sphere1->getMass()+sphere2->getMass())};
 
     sphere1->setVelocity(new_vel1);
     sphere2->setVelocity(new_vel2);

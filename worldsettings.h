@@ -18,12 +18,16 @@ public:
 
     phys::Vector getGravity();
     double getDensity();
+    bool getAutogravity();
 
 private slots:
     void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void on_buttonBox_rejected();    
+    void on_checkBox_clicked(bool checked);
+
 private:
     Ui::WorldSettings *ui;
+    bool m_autogravity{false};
 };
 
 #endif // WORLDSETTINGS_H

@@ -197,5 +197,6 @@ void MainWindow::worldSettings()
         phys::Vector gravity{settings->getGravity()};
         double density{settings->getDensity()};
         m_main_window_ui->osg_widget->setWorldSettings(gravity,density);
+        m_main_window_ui->osg_widget->setAutogravity(settings->getAutogravity());
     }
 }

@@ -13,6 +13,7 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <vector>
+#include <random>
 
 #include <QKeyEvent>
 #include <QPainter>
@@ -36,11 +37,12 @@ void OSGWidget::stopMyTimer()
     killTimer(m_timer_id);
 }
 
-double OSGWidget::randomDouble(double min, double max)
+double generateRandomDouble(double min_value, double max_value)
 {
-    double random = (rand()/(double)RAND_MAX);
-    double range = max - min;
-    return (random*range) + min;
+    std::random_device rd;
+    std::mt19937 gen{rd()};
+    std::uniform_real_distribution<> dis{min_value, max_value};
+    return dis(gen);
 }
 
 void OSGWidget::generateNewSpheres(SphereGenSettings sphere_gen_vals)
@@ -48,36 +50,37 @@ void OSGWidget::generateNewSpheres(SphereGenSettings sphere_gen_vals)
     m_sphere_settings = sphere_gen_vals;
     for (int i=0;i<m_sphere_settings.num_spheres;i++)
     {
-        double radius{randomDouble(m_sphere_settings.rad_min, m_sphere_settings.rad_max)};
-        double mass{randomDouble(m_sphere_settings.mass_min, m_sphere_settings.mass_max)};
-        double coeff_restitution{randomDouble(m_sphere_settings.cr_min, m_sphere_settings.cr_max)};
+        double radius{generateRandomDouble(m_sphere_settings.rad_min, m_sphere_settings.rad_max)};
+        double mass{generateRandomDouble(m_sphere_settings.mass_min, m_sphere_settings.mass_max)};
+        double coeff_restitution{generateRandomDouble(m_sphere_settings.cr_min, m_sphere_settings.cr_max)};
 
-        double pos_x{randomDouble((-m_box_size+radius),(m_box_size-radius))};
-        double pos_y{randomDouble((-m_box_size+radius),(m_box_size-radius))};
-        double pos_z{randomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_x{generateRandomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_y{generateRandomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_z{generateRandomDouble((-m_box_size+radius),(m_box_size-radius))};
 
-        double vel_scalar{randomDouble(m_sphere_settings.vel_min, m_sphere_settings.vel_max)};
-        double vel_x{randomDouble(-1,1)};
-        double vel_y{randomDouble(-1,1)};
-        double vel_z{randomDouble(-1,1)};
+        double vel_scalar{generateRandomDouble(m_sphere_settings.vel_min, m_sphere_settings.vel_max)};
+        double vel_x{generateRandomDouble(-1,1)};
+        double vel_y{generateRandomDouble(-1,1)};
+        double vel_z{generateRandomDouble(-1,1)};
         phys::Vector vel{vel_x,vel_y,vel_z};
         vel = (vel/vel.norm())*vel_scalar;
 
-        float color_r{(float)randomDouble(0,1)};
-        float color_g{(float)randomDouble(0,1)};
-        float color_b{(float)randomDouble(0,1)};
-        float color_a{(float)randomDouble(0,1)};
+        float color_r{(float)generateRandomDouble(0,1)};
+        float color_g{(float)generateRandomDouble(0,1)};
+        float color_b{(float)generateRandomDouble(0,1)};
+        float color_a{(float)generateRandomDouble(0,1)};
 
         osg::Vec3 center_of_sphere_xyz{0,0,0};
         osg::Vec4 sphere_color_rgba{color_r, color_g, color_b, color_a};
         phys::Vector position{pos_x, pos_y, pos_z};
-        phys::Vector accel = phys_obj.getGravity();
+        phys::Vector accel = m_phys_obj.getGravity();
 
         Sphere* new_sphere = new Sphere(position, vel, accel, radius, mass, coeff_restitution);
 
         osg::Node* sphere{this->setUpSphere(center_of_sphere_xyz, radius, sphere_color_rgba, new_sphere)};
         m_root->addChild(sphere);
         m_spheres.push_back(new_sphere);
+        m_phys_obj.checkForSphereCollision(m_spheres);
         m_sphere_geodes.push_back(sphere);
     }
 }
@@ -99,14 +102,14 @@ void OSGWidget::restartSimulation()
     for (Sphere *sphere: m_spheres)
     {
         double radius{sphere->getRadius()};
-        double pos_x{randomDouble((-m_box_size+radius),(m_box_size-radius))};
-        double pos_y{randomDouble((-m_box_size+radius),(m_box_size-radius))};
-        double pos_z{randomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_x{generateRandomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_y{generateRandomDouble((-m_box_size+radius),(m_box_size-radius))};
+        double pos_z{generateRandomDouble((-m_box_size+radius),(m_box_size-radius))};
 
-        double vel_scalar{randomDouble(this->m_sphere_settings.vel_min, this->m_sphere_settings.vel_max)};
-        double vel_x{randomDouble(-1,1)};
-        double vel_y{randomDouble(-1,1)};
-        double vel_z{randomDouble(-1,1)};
+        double vel_scalar{generateRandomDouble(this->m_sphere_settings.vel_min, this->m_sphere_settings.vel_max)};
+        double vel_x{generateRandomDouble(-1,1)};
+        double vel_y{generateRandomDouble(-1,1)};
+        double vel_z{generateRandomDouble(-1,1)};
         phys::Vector vel{vel_x,vel_y,vel_z};
         vel = (vel/vel.norm())*vel_scalar;
         sphere->setPosition(phys::Vector{pos_x,pos_y,pos_z});
@@ -128,8 +131,8 @@ void OSGWidget::setupWorld()
 
 void OSGWidget::setWorldSettings(phys::Vector gravity, double density)
 {
-    phys_obj.setGravity(gravity);
-    phys_obj.setDensity(density);
+    m_phys_obj.setGravity(gravity);
+    m_phys_obj.setDensity(density);
 }
 
 OSGWidget::OSGWidget(QWidget* parent, Qt::WindowFlags flags):
@@ -157,14 +160,11 @@ OSGWidget::~OSGWidget()
 
 void OSGWidget::timerEvent(QTimerEvent *event)
 {
-    phys_obj.checkForSphereCollision(m_spheres);
+    m_phys_obj.checkForSphereCollision(m_spheres);
     for (Sphere* sphere: m_spheres)
     {
-        phys_obj.updatePosition(sphere);
-//        phys_obj.checkForBoxCollission(sphere,
-//                                       phys::Vector{m_box_size,m_box_size,m_box_size},
-//                                       phys::Vector{-m_box_size,-m_box_size,-m_box_size});
-        phys_obj.bounceOffWall(sphere,
+        m_phys_obj.updatePosition(sphere);
+        m_phys_obj.bounceOffWall(sphere,
                                phys::Vector{m_box_size,m_box_size,m_box_size},
                                phys::Vector{-m_box_size,-m_box_size,-m_box_size});
     }
@@ -202,6 +202,10 @@ void OSGWidget::keyPressEvent(QKeyEvent* event)
     {
         m_view->home();
         return;
+    }
+    if(event->key() == Qt::Key_A)
+    {
+        m_autogravity= !m_autogravity;
     }
 
     this->getEventQueue()->keyPress(osgGA::GUIEventAdapter::KeySymbol(*key_data));
@@ -289,11 +293,28 @@ void OSGWidget::repaintOsgGraphicsAfterInteraction(QEvent* event)
     case QEvent::MouseMove:
     case QEvent::Wheel:
         this->update();
+        if (m_autogravity)
+        {
+            this->updateAutogravity();
+        }
         break;
 
     default:
         break;
     }
+}
+
+void OSGWidget::setAutogravity(bool autogravity)
+{
+    m_autogravity = autogravity;
+}
+
+void OSGWidget::updateAutogravity()
+{
+    osg::Quat q_intertial_camera= m_manipulator->getRotation();
+    osg::Vec3d gravity{0,0,-9.8};
+    gravity = m_q0.conj()*q_intertial_camera*gravity;
+    m_phys_obj.setGravity(phys::Vector{gravity.x(),gravity.y(),gravity.z()});
 }
 
 osg::Camera *OSGWidget::setUpCamera(osg::Vec4 background_color,
@@ -320,11 +341,11 @@ osg::ref_ptr<osgGA::TrackballManipulator> OSGWidget::setUpTrackballManipulator(o
                                                                                osg::Vec3d camera_center_of_focus_xyz,
                                                                                osg::Vec3d world_up_vector_xyz)
 {
-    osg::ref_ptr<osgGA::TrackballManipulator> manipulator{new osgGA::TrackballManipulator};
-    manipulator->setAllowThrow(false);
-    manipulator->setHomePosition(camera_location_xyz, camera_center_of_focus_xyz, world_up_vector_xyz);
+    m_manipulator = new osgGA::TrackballManipulator;
+    m_manipulator->setAllowThrow(false);
+    m_manipulator->setHomePosition(camera_location_xyz, camera_center_of_focus_xyz, world_up_vector_xyz);
 
-    return manipulator;
+    return m_manipulator;
 }
 
 osg::Node *OSGWidget::setUpSphere(osg::Vec3 center_of_sphere_xyz,
@@ -446,14 +467,15 @@ void OSGWidget::setUpMView()
     osg::Vec3d camera_location_xyz{0.0, -20.0, 3.0};
     osg::Vec3d camera_center_of_focus_xyz{0.0, 0.0, 0.0};
     osg::Vec3d world_up_vector_xyz{0.0, 0.0, 1.0};
-    osg::ref_ptr<osgGA::TrackballManipulator> manipulator{this->setUpTrackballManipulator(camera_location_xyz,
+    osg::ref_ptr<osgGA::TrackballManipulator> m_manipulator{this->setUpTrackballManipulator(camera_location_xyz,
                                                                                           camera_center_of_focus_xyz,
                                                                                           world_up_vector_xyz)};
     m_view->setCamera(camera);
-    m_view->setCameraManipulator(manipulator);
+    m_view->setCameraManipulator(m_manipulator);
     m_view->setSceneData(m_root.get());
     m_view->addEventHandler(new osgViewer::StatsHandler);
     m_view->home();
+    m_q0 = m_manipulator->getRotation();
 }
 
 void OSGWidget::setupMViewer()

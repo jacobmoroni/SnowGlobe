@@ -26,6 +26,7 @@ public:
     void startMyTimer();
     void stopMyTimer();
     void setWorldSettings(phys::Vector gravity, double density);
+    void setAutogravity(bool autogravity);
     void generateNewSpheres(SphereGenSettings sphere_gen_vals);
     void restartSimulation();
     void clearSimulation();
@@ -68,6 +69,7 @@ protected:
     void setupMViewer();
     void setupWorld();
     double randomDouble(double min, double max);
+    void updateAutogravity();
 
 private:
     virtual void on_resize(int width, int height);
@@ -77,11 +79,14 @@ private:
     osg::ref_ptr<osgViewer::View> m_view;
     osg::ref_ptr<osg::Group> m_root;
     int m_timer_id{0};
-    phys::Physics phys_obj;
+    phys::Physics m_phys_obj;
     std::vector<Sphere*> m_spheres;
     std::vector<osg::Node*> m_sphere_geodes;
     double m_box_size{5};
     SphereGenSettings m_sphere_settings;
+    osg::Quat m_q0;
+    osg::ref_ptr<osgGA::TrackballManipulator> m_manipulator;
+    bool m_autogravity{false};
 };
 
 #endif
