@@ -1,6 +1,29 @@
 #include <gtest/gtest.h>
 #include "vector.h"
 
+TEST(GivenNumberAndSaturationValues, whenNumberIsSaturated_SaturatedValuesAreCorrect)
+{
+    double num1{100};
+    double num2{5};
+    double num3{30};
+    double min_value{10};
+    double max_value{90};
+
+    EXPECT_EQ(max_value, phys::saturateNumber(num1,min_value,max_value));
+    EXPECT_EQ(min_value, phys::saturateNumber(num2,min_value,max_value));
+    EXPECT_EQ(num3, phys::saturateNumber(num3,min_value,max_value));
+}
+
+TEST(GivenVectorAndSaturationValues, whenVectorIsSaturated_SaturatedValuesAreCorrect)
+{
+    phys::Vector vec1{100.0,50.0,0.0};
+    double min_value{20.0};
+    double max_value{80.0};
+    phys::Vector golden_values{max_value,50,min_value};
+
+    EXPECT_EQ(golden_values,vec1.saturate(min_value,max_value));
+}
+
 TEST(GivenSingleVector,whenInializingVectors_MembersAreCorrect)
 {
     phys::Vector vec1{1.0, 2.0, 3.0};

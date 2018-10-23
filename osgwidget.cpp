@@ -161,9 +161,12 @@ void OSGWidget::timerEvent(QTimerEvent *event)
     for (Sphere* sphere: m_spheres)
     {
         phys_obj.updatePosition(sphere);
-        phys_obj.bounceOffWallWhenCollisionDetected(sphere,
-                                                    phys::Vector{m_box_size,m_box_size,m_box_size},
-                                                    phys::Vector{-m_box_size,-m_box_size,-m_box_size});
+//        phys_obj.checkForBoxCollission(sphere,
+//                                       phys::Vector{m_box_size,m_box_size,m_box_size},
+//                                       phys::Vector{-m_box_size,-m_box_size,-m_box_size});
+        phys_obj.bounceOffWall(sphere,
+                               phys::Vector{m_box_size,m_box_size,m_box_size},
+                               phys::Vector{-m_box_size,-m_box_size,-m_box_size});
     }
     update();
 }

@@ -1,5 +1,6 @@
 #include "vector.h"
 #include <math.h>
+#include <algorithm>
 
 namespace phys {
 
@@ -114,6 +115,11 @@ double Vector::dot(Vector rhs)
     return double{m_x*rhs.getX()+m_y*rhs.getY()+m_z*rhs.getZ()};
 }
 
+Vector Vector::saturate(double min_val, double max_val)
+{
+    return Vector{saturateNumber(m_x,min_val,max_val),saturateNumber(m_y,min_val,max_val),saturateNumber(m_z,min_val,max_val)};
+}
+
 void Vector::setVector(Vector vec)
 {
     m_x = vec.getX();
@@ -135,4 +141,11 @@ Vector operator -(double lhs, Vector rhs)
 {
     return Vector{-rhs + lhs};
 }
+
+double saturateNumber(double value, double min_val, double max_val)
+{
+return double(std::max(std::min(max_val, value),min_val));
 }
+}
+
+

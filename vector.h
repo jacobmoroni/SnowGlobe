@@ -23,6 +23,7 @@ public:
     Vector abs();
     double norm();
     double dot(Vector rhs);
+    Vector saturate(double min_val, double max_val);
     void setVector(Vector vec);
 
 private:
@@ -34,6 +35,7 @@ private:
 Vector operator- (double lhs, Vector rhs);
 Vector operator+ (double lhs, Vector rhs);
 Vector operator* (double lhs, Vector rhs);
+double saturateNumber(double value, double min_val, double max_val);
 }
 
 #endif // VECTOR_H
