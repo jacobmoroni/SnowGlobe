@@ -167,12 +167,6 @@ void Physics::bounceOffSphere(Sphere *sphere1, Sphere *sphere2)
     double vel2_diff_dotted{vel2_diff.dot(pos2_diff)};
     double pos2_norm_squared{pos2_diff.norm()*pos2_diff.norm()};
     Vector new_vel2{sphere2->getVelocity()-(sphere2->getCoeffRestitution()*mass2_term*vel2_diff_dotted/pos2_norm_squared*pos2_diff)};
-//    Vector m1{(sphere1->getMass()*sphere1->getVelocity())};
-//    Vector m2{(sphere2->getMass()*sphere2->getVelocity())};
-//    double crm1{sphere2->getMass()*sphere1->getCoeffRestitution()};
-//    Vector new_vel1{(m1+m2+crm1*(vel2_diff))/(sphere1->getMass()+sphere2->getMass())};
-//    double crm2{sphere1->getMass()*sphere2->getCoeffRestitution()};
-//    Vector new_vel2{(m1+m2+crm2*(vel1_diff))/(sphere1->getMass()+sphere2->getMass())};
 
     sphere1->setVelocity(new_vel1);
     sphere2->setVelocity(new_vel2);
