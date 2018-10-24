@@ -7,5 +7,6 @@
        <file>clear.png</file>
        <file>generate.png</file>
        <file>world.png</file>
+       <file>snowglobe.png</file>
    </qresource>
 </RCC>
