@@ -7,6 +7,9 @@ WorldSettings::WorldSettings(QWidget *parent) :
     ui(new Ui::WorldSettings)
 {
     ui->setupUi(this);
+    ui->gravity_x->setDisabled(true);
+    ui->gravity_y->setDisabled(true);
+    ui->gravity_z->setDisabled(true);
 }
 
 WorldSettings::~WorldSettings()

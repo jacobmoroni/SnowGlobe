@@ -81,6 +81,9 @@ void OSGWidget::generateNewSpheres(SphereGenSettings sphere_gen_vals)
         m_root->addChild(sphere);
         m_spheres.push_back(new_sphere);
         m_phys_obj.checkForSphereCollision(m_spheres);
+        m_phys_obj.bounceOffWall(new_sphere,
+                                 phys::Vector{m_box_size,m_box_size,m_box_size},
+                                 phys::Vector{-m_box_size,-m_box_size,-m_box_size});
         m_sphere_geodes.push_back(sphere);
     }
 }
@@ -114,6 +117,10 @@ void OSGWidget::restartSimulation()
         vel = (vel/vel.norm())*vel_scalar;
         sphere->setPosition(phys::Vector{pos_x,pos_y,pos_z});
         sphere->setVelocity(vel);
+        m_phys_obj.checkForSphereCollision(m_spheres);
+        m_phys_obj.bounceOffWall(sphere,
+                               phys::Vector{m_box_size,m_box_size,m_box_size},
+                               phys::Vector{-m_box_size,-m_box_size,-m_box_size});
     }
 }
 

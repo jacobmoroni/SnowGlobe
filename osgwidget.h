@@ -86,7 +86,7 @@ private:
     SphereGenSettings m_sphere_settings;
     osg::Quat m_q0;
     osg::ref_ptr<osgGA::TrackballManipulator> m_manipulator;
-    bool m_autogravity{false};
+    bool m_autogravity{true};
 };
 
 #endif

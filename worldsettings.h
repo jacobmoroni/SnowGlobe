@@ -27,7 +27,7 @@ private slots:
 
 private:
     Ui::WorldSettings *ui;
-    bool m_autogravity{false};
+    bool m_autogravity{true};
 };
 
 #endif // WORLDSETTINGS_H

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>416</width>
-    <height>166</height>
+    <height>186</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -156,7 +156,7 @@
       <string>Autogravity (Control gravity by rotation of box)</string>
      </property>
      <property name="checked">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
