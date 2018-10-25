@@ -138,9 +138,9 @@ double Physics::getDensity()
 
 void Physics::checkForSphereCollision(std::vector<Sphere *> &spheres)
 {
-    for (int i=0; i<spheres.size(); i++)
+    for (int i{0}; i<spheres.size(); i++)
     {
-        for (int j=i+1; j<spheres.size(); j++)
+        for (int j{i+1}; j<spheres.size(); j++)
         {
             Vector pos_d{spheres[i]->getPosition()-spheres[j]->getPosition()};
             if (pos_d.norm()+m_collision_buffer < (spheres[i]->getRadius()+spheres[j]->getRadius()))

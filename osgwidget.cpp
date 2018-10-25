@@ -48,7 +48,7 @@ double generateRandomDouble(double min_value, double max_value)
 void OSGWidget::generateNewSpheres(SphereGenSettings sphere_gen_vals)
 {
     m_sphere_settings = sphere_gen_vals;
-    for (int i=0;i<m_sphere_settings.num_spheres;i++)
+    for (int i{0};i<m_sphere_settings.num_spheres;i++)
     {
         double radius{generateRandomDouble(m_sphere_settings.rad_min, m_sphere_settings.rad_max)};
         double mass{generateRandomDouble(m_sphere_settings.mass_min, m_sphere_settings.mass_max)};
